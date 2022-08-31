@@ -1,6 +1,6 @@
 async function fetchLanguages() {
   try {
-    const response = await fetch("../languages/index.json");
+    const response = await fetch("./languages/index.json");
     const data = await response.json();
     renderLanguages(data.list);
   } catch (error) {
@@ -22,9 +22,8 @@ function renderLanguages(data) {
 
 async function fetchSamples(file) {
   try {
-    const response = await fetch(`../languages/${file}`);
+    const response = await fetch(`./languages/${file}`);
     const data = await response.json();
-    // console.log(data.samples);
     renderSample(data.samples);
   } catch (error) {
     console.log(error);
@@ -33,7 +32,6 @@ async function fetchSamples(file) {
 
 function renderSample(sample) {
   var text = (document.querySelector("#text").innerText = sample[3]);
-  // firstProgram.toString()); // text to be typed converted to string
   var input1 = document.querySelector("#input1"); //value of user's input
   var show = document.querySelector("#show");
 
