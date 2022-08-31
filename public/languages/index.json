@@ -1,0 +1,19 @@
+{
+  "list": [
+    {
+      "name": "HTML",
+      "src": "html.json",
+      "description": "HTML is the markup of language for defining the structure of web pages"
+    },
+    {
+      "name": "CSS",
+      "src": "css.json",
+      "description": "CSS is the technology for designing web pages"
+    },
+    {
+      "name": "Glossary",
+      "src": "glossary.json",
+      "description": "Get familiar with common technical terms"
+    }
+  ]
+}
