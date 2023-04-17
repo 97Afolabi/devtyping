@@ -1,19 +1,29 @@
 {
   "list": [
     {
-      "name": "HTML",
-      "src": "html.json",
-      "description": "HTML is the markup of language for defining the structure of web pages"
-    },
-    {
       "name": "CSS",
       "src": "css.json",
       "description": "CSS is the technology for designing web pages"
     },
     {
+      "name": "Golang",
+      "src": "golang.json",
+      "description": "Go is a statically typed, compiled high-level programming language designed at Google by Robert Griesemer, Rob Pike, and Ken Thompson. It is syntactically similar to C, but with memory safety, garbage collection, structural typing, and CSP-style concurrency."
+    },
+    {
       "name": "Glossary",
       "src": "glossary.json",
       "description": "Get familiar with common technical terms"
+    },
+    {
+      "name": "HTML",
+      "src": "html.json",
+      "description": "HTML is the markup of language for defining the structure of web pages"
+    },
+    {
+      "name": "Config samples",
+      "src": "configs.json",
+      "description": "Sample server/network configuration files"
     }
   ]
 }
