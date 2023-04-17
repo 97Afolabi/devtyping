@@ -17,6 +17,10 @@
                 margin: 1em auto;
             }
 
+            main {
+                height: 90vh;
+            }
+
             header {
                 max-height: 2em;
                 background-color: darkgoldenrod;
@@ -26,6 +30,11 @@
                 font-weight: bolder;
                 color: wheat;
                 text-align: center;
+            }
+
+            pre,
+            code {
+                white-space: normal;
             }
 
             #technologies {
@@ -46,7 +55,6 @@
             .technology,
             .icon,
             .description {
-                /* padding: 0 auto; */
                 text-align: center;
             }
 
@@ -61,6 +69,7 @@
                 flex-direction: column;
                 justify-content: space-between;
                 padding: 1em 0;
+                overflow-y: scroll;
             }
 
             aside {
@@ -68,9 +77,14 @@
             }
 
             #samples {
+                height: 85%;
                 display: flex;
                 flex-flow: column wrap;
                 justify-content: flex-start;
+            }
+
+            #contributor {
+                height: 15%;
             }
 
             .samples {
@@ -83,34 +97,33 @@
             }
 
             #touch-typing {
+                height: 90vh;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
-                max-width: 90%;
-                /* align-items: center; */
-                /* align-content: center; */
-                /* margin: 0 auto; */
+                position: relative;
+                padding: 10px;
             }
 
             #touch-typing pre {
-                border: 1px dotted grey;
-                max-height: 80%;
-                overflow-y: scroll;
-                overflow-x: hidden;
-                padding: 0.5em 1.5em;
+                flex-grow: 1;
+                overflow-y: auto;
             }
 
             #touch-typing textarea {
-                /* position: fixed; */
-                /* position: relative; */
-                width: 100%;
+                width: 90%;
+                height: 32px;
                 margin-bottom: 1em;
                 display: none;
+                margin: 10px 20px
             }
 
             #indicator {
-                background-color: bisque;
-                padding: 2em 1em;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: #ccc;
+                width: 90%
             }
 
             footer {
