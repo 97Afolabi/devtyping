@@ -33,12 +33,12 @@ document.addEventListener("load", fetchLanguages());
 
 function renderLanguages(data) {
   const noteClasses = [
-    "",
     "note-personal",
     "note-fav",
     "note-work",
     "note-social",
     "note-important",
+    "",
   ];
   let cursor = 0;
   data.map((language) => {
