@@ -1,0 +1,88 @@
+/*
+	===============================
+			@Import	Function
+	===============================
+*/
+/*
+	===============================
+			@Import	Mixins
+	===============================
+*/
+/*
+    Countdown Simple
+*/
+#cd-simple {
+  display: flex;
+  justify-content: space-around;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+#cd-simple .countdown {
+  margin-bottom: 5px;
+}
+
+#cd-simple .clock-count-container {
+  width: 50px;
+  height: 50px;
+  -webkit-box-shadow: 1px 2px 12px 0 rgba(31, 45, 61, 0.1);
+  box-shadow: 1px 2px 12px 0 rgba(31, 45, 61, 0.1);
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid #e0e6ed;
+}
+
+#cd-simple .clock-val {
+  font-size: 18px;
+  color: #1b55e2;
+  margin-bottom: 0;
+}
+
+#cd-simple .clock-text {
+  color: #3b3f5c;
+  font-size: 12px;
+  margin-bottom: 0;
+  margin-top: 2px;
+}
+
+/*
+    Countdown Circle
+*/
+#cd-circle {
+  display: flex;
+  justify-content: space-around;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+#cd-circle .countdown {
+  margin-bottom: 5px;
+}
+
+#cd-circle .clock-count-container {
+  width: 45px;
+  height: 45px;
+  -webkit-box-shadow: 1px 2px 12px 0 rgba(31, 45, 61, 0.1);
+  box-shadow: 1px 2px 12px 0 rgba(31, 45, 61, 0.1);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid #e0e6ed;
+  margin: 0 0 12px 0;
+}
+
+#cd-circle .clock-val {
+  font-size: 12px;
+  color: #1b55e2;
+  margin-bottom: 0;
+}
+
+#cd-circle .clock-text {
+  color: #3b3f5c;
+  font-size: 12px;
+  margin-bottom: 0;
+  margin-top: 2px;
+}
