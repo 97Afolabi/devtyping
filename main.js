@@ -114,7 +114,7 @@ function renderSample(samples) {
   input.addEventListener("paste", (e) => e.preventDefault());
 
   input.addEventListener("keyup", function () {
-    const inputPos = input.value.length ?? 0; //length of user's input
+    const inputPos = input.value.length; //length of user's input
 
     //test equality of input and text to be entered
     input.value === textInput.slice(0, inputPos)
