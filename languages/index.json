@@ -1,29 +1,34 @@
 {
   "list": [
     {
-      "name": "CSS",
-      "src": "css.json",
-      "description": "CSS is the technology for designing web pages"
+      "count": 13,
+      "description": "CSS is the technology for designing web pages",
+      "id": "css",
+      "name": "CSS"
     },
     {
-      "name": "Golang",
-      "src": "golang.json",
-      "description": "Golang is a modern programming language that is used for a variety of tasks, including web development, systems programming, and cloud computing"
+      "count": 23,
+      "description": "Golang is a modern programming language that is used for a variety of tasks, including web development, systems programming, and cloud computing",
+      "id": "golang",
+      "name": "Golang"
     },
     {
-      "name": "Glossary",
-      "src": "glossary.json",
-      "description": "Get familiar with common technical terms"
+      "count": 33,
+      "description": "Get familiar with common technical terms",
+      "id": "glossary",
+      "name": "Glossary"
     },
     {
-      "name": "HTML",
-      "src": "html.json",
-      "description": "HTML is the markup of language for defining the structure of web pages"
+      "count": 43,
+      "description": "HTML is the markup of language for defining the structure of web pages",
+      "id": "html",
+      "name": "HTML"
     },
     {
-      "name": "Config samples",
-      "src": "configs.json",
-      "description": "Sample server/network configuration files"
+      "count": 53,
+      "description": "Sample server/network configuration files",
+      "id": "configs",
+      "name": "Config samples"
     }
   ]
 }

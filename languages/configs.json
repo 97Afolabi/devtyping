@@ -1,4 +1,5 @@
 {
+  "title": "Configuration samples",
   "samples": [
     {
       "title": "Nginx server block config (NodeJS)",
