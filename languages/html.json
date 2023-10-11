@@ -1,33 +1,35 @@
 {
+  "title": "HTML",
+  "description": "HTML is the markup of language for defining the structure of web pages",
   "samples": [
     {
       "title": "Go Dictionary test",
-      "contributor": "97Afolabi",
-      "url": "",
+      "contributors": ["97Afolabi"],
+      "url": "go-dict-83829382",
       "text": "func TestSearch(t *testing.T) {\n dictionary := Dictionary{\"test\": \"this is just a test\"}\n\n t.Run(\"known word\", func(t *testing.T) {\n  got, _ := dictionary.Search(\"test\")\n  want := \"this is just a test\"\n\n  assertStrings(t, got, want)\n })\n\n t.Run(\"unknown word\", func(t *testing.T) {\n  _, got := dictionary.Search(\"unknown\")\n  \n  assertError(t, got, ErrNotFound)\n })\n}\n"
     },
     {
       "title": "DevTyp.i.ng template",
-      "contributor": "SuiOzovehe",
-      "url": "",
+      "contributors": ["SuiOzovehe"],
+      "url": "devtyping-23423242",
       "text": "<!DOCTYPE html>\n<html lang=\"en\">\n\n    <head>\n        <meta charset=\"UTF-8\">\n        <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n        <title>DevTyp.i.ng parser</title>\n\n        <style type=\"text/css\">\n            textarea {\n                display: block;\n            }\n        </style>\n    </head>\n\n    <body>\n        <textarea id=\"input\"></textarea>\n        <textarea id=\"output\"></textarea>\n        <button id=\"copy\">Copy</button>\n\n        \n    </body>\n\n</html>"
     },
     {
       "title": "Go test snippet",
-      "contributor": "Quill",
-      "url": "",
+      "contributors": ["Quill"],
+      "url": "go-testing-232323",
       "text": "func assertStrings(t testing.TB, got, want string) {\n t.Helper()\n\n if got != want {\n  t.Errorf(\"got %q want %q\", got, want)\n }\n}"
     },
     {
       "title": "TETFund footer",
-      "contributor": "El0tech",
-      "url": "",
+      "contributors": ["El0tech"],
+      "url": "tetfund-3383828",
       "text": "<div class=\"footer-wrapper\">\n                    <div class=\"footer-section f-section-1\">\n                    </div>\n                    <div class=\"footer-section f-section-2\">\n                        <p class=\"\">Coded with <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\"\n                                viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"\n                                stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"feather feather-heart\">\n                                <path\n                                    d=\"M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z\">\n                                </path>\n                            </svg> by TETFund AI Team UniBen</p>\n                    </div>\n                </div>"
     },
     {
       "title": "DevTyp.i.ng sample text",
-      "contributor": "97Afolabi",
-      "url": "",
+      "contributors": ["97Afolabi"],
+      "url": "first-page-234323",
       "text": "<!DOCTYPE html>\n<html lang='en-US'>\n\n<head>\n  <title>My First Web Page!</title>\n</head>\n\n<body>\n\n<h1>My First Web Page!</h1>\n<p>Hello World. I'm happy to be here!</p>\n\n</body>\n\n</html>\n"
     }
   ]
