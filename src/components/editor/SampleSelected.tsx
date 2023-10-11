@@ -9,6 +9,7 @@ export default function SampleSelected({ data }: { data: SampleSelectedProp }) {
   const { text, title, contributors, slug } = data;
   const formattedText = replaceHTMLChar(text);
 
+  const [isTimerRunning, setTimerRunning] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [buttonText, setCopyButtonText] = useState("Copy");
   const [indicatorColour, setIndicatorColour] = useState("rgba(255, 255, 255)");
@@ -27,6 +28,11 @@ export default function SampleSelected({ data }: { data: SampleSelectedProp }) {
     setInputValue(newInputValue);
     const inputPos = newInputValue.length;
 
+    if (!isTimerRunning && newInputValue.length) {
+      // Start the timer when input begins
+      setTimerRunning(true);
+    }
+
     // Test equality of input and text to be entered
     if (newInputValue === textInput.slice(0, inputPos)) {
       setIndicatorColour("rgba(255, 255, 255)");
@@ -40,6 +46,7 @@ export default function SampleSelected({ data }: { data: SampleSelectedProp }) {
       newInputValue === textInput.slice(0, inputPos)
     ) {
       setIndicatorColour("rgba(32, 245, 32, 0.8)");
+      setTimerRunning(false);
     }
 
     if (inputPos < textInput.length) {
@@ -70,7 +77,7 @@ export default function SampleSelected({ data }: { data: SampleSelectedProp }) {
             }}
           >
             <div id="title">{title}</div>
-            <Timer></Timer>
+            <Timer isTyping={isTimerRunning}></Timer>
           </section>
           <pre className="p-2">
             <code
