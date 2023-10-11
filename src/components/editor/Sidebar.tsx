@@ -13,7 +13,7 @@ export default function Sidebar({
   let menuLink: string;
   let menuText: string;
   if (contributors && contributors.length) {
-    menuLink = slug;
+    menuLink = `/e/${slug}`;
     menuText = "Back";
   } else {
     menuLink = "/";
