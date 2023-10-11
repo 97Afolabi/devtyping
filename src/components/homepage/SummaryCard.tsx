@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CategorySummary } from "../../lib/interfaces/CategorySummary";
 import { getBgColor } from "../../lib/constants/bg-colors";
 
-export default function Summary({ data }: { data: CategorySummary }) {
+export default function SummaryCard({ data }: { data: CategorySummary }) {
   const { count, description, id, name } = data;
   const bgColor = getBgColor(id);
   return (
