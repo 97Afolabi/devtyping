@@ -1,20 +1,52 @@
 "use client";
-import { useState } from "react";
-import { SampleSelectedProp } from "../../lib/interfaces/Editor";
+import { useEffect, useState } from "react";
 import { replaceHTMLChar } from "../../lib/constants/strings";
+import { exercise } from "../../lib/data/data";
 import Sidebar from "./Sidebar";
 import Timer from "./Timer";
 
-export default function SampleSelected({ data }: { data: SampleSelectedProp }) {
-  const { text, title, contributors, slug } = data;
-  const formattedText = replaceHTMLChar(text);
-
+export default function SampleSelected({
+  topicSlug,
+  exerciseSlug,
+}: {
+  topicSlug: string;
+  exerciseSlug: string;
+}) {
   const [isTimerRunning, setTimerRunning] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [buttonText, setCopyButtonText] = useState("Copy");
   const [indicatorColour, setIndicatorColour] = useState("rgba(255, 255, 255)");
-  const [challengeContent, setChallengeContent] = useState(formattedText);
-  const textInput = text;
+  const [challengeContent, setChallengeContent] = useState("");
+
+  const [textInput, setTextInput] = useState("");
+  const [title, setTitle] = useState("");
+  const [contributors, setContributors] = useState<string[]>([]);
+  useEffect(() => {
+    const getExercise = async () => {
+      const data = await exercise.get(exerciseSlug);
+      if (!data) {
+        // TODO: show 404
+      }
+      handleTitleUpdate(data.title);
+      handleTextInputUpdate(data.text);
+      setChallengeContent(replaceHTMLChar(data.text));
+      if (data.contributors) {
+        handleContributorsUpdate(data.contributors);
+      }
+    };
+
+    getExercise();
+  }, [exerciseSlug]);
+
+  const handleTextInputUpdate = (text: string) => {
+    setTextInput(text);
+  };
+  const handleTitleUpdate = (text: string) => {
+    setTitle(text);
+  };
+  const handleContributorsUpdate = (contributors: string[]) => {
+    setContributors(contributors);
+  };
 
   const handleCopyButtonClick: React.MouseEventHandler<HTMLButtonElement> = (
     event
@@ -67,7 +99,12 @@ export default function SampleSelected({ data }: { data: SampleSelectedProp }) {
 
   return (
     <section className="flex flex-col lg:flex-row w-full h-5/6 py-5 px-2 md:px-10 gap-3">
-      <Sidebar data={[]} slug={slug} contributors={contributors}></Sidebar>
+      <Sidebar
+        data={[]}
+        slug={topicSlug}
+        contributors={contributors}
+        sampleSelected={true}
+      ></Sidebar>
       <div className="basis-4/5 flex flex-col justify-between bg-slate-100 lg:max-2xl:rounded-r-lg max-lg:rounded-b-lg overflow-scroll py-3">
         <section className="w-full font-mono font-semibold">
           <section
