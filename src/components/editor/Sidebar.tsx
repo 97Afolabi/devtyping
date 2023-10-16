@@ -1,18 +1,20 @@
 import Link from "next/link";
-import { SidebarItems } from "../../lib/interfaces/Sidebar";
+import { ExerciseSummary } from "../../lib/data/firebase/exercises";
 
 export default function Sidebar({
   data,
   slug,
   contributors,
+  sampleSelected,
 }: {
-  data: SidebarItems[];
+  data: ExerciseSummary[];
   slug: string;
   contributors: string[];
+  sampleSelected: boolean;
 }) {
   let menuLink: string;
   let menuText: string;
-  if (contributors && contributors.length) {
+  if (sampleSelected) {
     menuLink = `/e/${slug}`;
     menuText = "Back";
   } else {
@@ -35,10 +37,10 @@ export default function Sidebar({
           {data &&
             data.map((list) => (
               <li
-                key={list.url}
+                key={list.slug}
                 className="py-1 mb-1 border-b hover:font-semibold hover:bg-white"
               >
-                <Link href={`/e/${slug}/${list.url}`}>{list.title}</Link>
+                <Link href={`/e/${slug}/${list.slug}`}>{list.title}</Link>
               </li>
             ))}
         </ul>
