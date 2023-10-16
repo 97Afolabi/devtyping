@@ -4,9 +4,10 @@ import "tailwindcss/tailwind.css";
 // import "./globals.css";
 import Header from "../components/layouts/header";
 import Footer from "../components/layouts/footer";
+// import { envVars } from "../lib/constants/utils";
 
 const { TWITTER_CREATOR, TWITTER_SITE, SITE_NAME, BASE_URL } = process.env;
-const baseUrl = BASE_URL ? BASE_URL : "http://localhost:3000";
+const baseUrl = BASE_URL ? BASE_URL : "https://devtyp.i.ng";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),

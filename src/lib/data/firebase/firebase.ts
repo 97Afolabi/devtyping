@@ -10,19 +10,10 @@ import {
   query,
   WhereFilterOp,
 } from "firebase/firestore";
-
-const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
-  measurementId: "",
-};
+import { envVars } from "../../constants/utils";
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(envVars.firebase);
 
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
