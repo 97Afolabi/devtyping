@@ -1,15 +1,14 @@
-import { SidebarItems } from "./Sidebar";
+import { ExerciseSummary } from "../data/firebase/exercises";
 
 export interface SampleUnselectedProp {
-  samples: SidebarItems[];
-  slug: string;
   title: string;
+  slug: string;
   description: string;
+  samples: ExerciseSummary[];
 }
 
 export interface SampleSelectedProp {
   text: string;
-  title: string;
   contributors: string[];
   slug: string;
 }
