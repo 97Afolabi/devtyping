@@ -39,7 +39,8 @@ export default function RootLayout({
       <body className="flex flex-col h-screen">
         <Header />
         <main className="basis-11/12 bg-stone-300">
-          <Suspense>{children}</Suspense>
+          {children}
+          {/* TODO: use <Suspense>{children}</Suspense> */}
         </main>
         <Footer />
       </body>
