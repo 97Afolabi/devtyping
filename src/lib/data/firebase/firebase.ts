@@ -29,13 +29,14 @@ export const firestore = {
       await setDoc(doc(collectionRef, data.slug), data, { merge: true });
     } catch (e) {
       console.error("Error adding document: ", e);
+      throw new Error("Error adding document");
     }
   },
 
-  async find(collName: string): Promise<any[]> {
+  async find(collName: string): Promise<unknown[]> {
     try {
       const querySnapshot = await getDocs(collection(db, collName));
-      const documents: any[] = [];
+      const documents: unknown[] = [];
       querySnapshot.forEach((doc) =>
         documents.push({
           ...doc.data(),
@@ -47,11 +48,11 @@ export const firestore = {
       return documents;
     } catch (e) {
       console.error("Error fetching documents: ", e);
-      return [];
+      throw new Error("Error fetching documents");
     }
   },
 
-  async findById(collection: string, id: string) {
+  async findById(collection: string, id: string): Promise<unknown> {
     try {
       const docRef = doc(db, collection, id);
       const docSnap = await getDoc(docRef);
@@ -63,10 +64,11 @@ export const firestore = {
           updatedAt: docSnap.data().updatedAt.toDate(),
         };
       } else {
-        console.log("Document not found");
+        console.error("Document not found");
       }
     } catch (e) {
       console.error("Error fetching document: ", e);
+      throw new Error("Error fetching document");
     }
   },
 
@@ -75,12 +77,12 @@ export const firestore = {
     field: string,
     operator: WhereFilterOp,
     value: unknown
-  ) {
+  ): Promise<unknown[]> {
     try {
       const q = query(collection(db, collName), where(field, operator, value));
       const querySnapshot = await getDocs(q);
 
-      const documents: any[] = [];
+      const documents: unknown[] = [];
       querySnapshot.forEach((doc) =>
         documents.push({
           ...doc.data(),
@@ -92,7 +94,7 @@ export const firestore = {
       return documents;
     } catch (e) {
       console.error("Error fetching documents: ", e);
-      return [];
+      throw new Error("Error fetching documents");
     }
   },
 };
