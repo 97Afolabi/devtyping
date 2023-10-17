@@ -27,26 +27,16 @@ export default function SampleSelected({
       if (!data) {
         // TODO: show 404
       }
-      handleTitleUpdate(data.title);
-      handleTextInputUpdate(data.text);
+      setTitle(data.title);
+      setTextInput(data.text);
       setChallengeContent(replaceHTMLChar(data.text));
       if (data.contributors) {
-        handleContributorsUpdate(data.contributors);
+        setContributors(data.contributors);
       }
     };
 
     getExercise();
   }, [exerciseSlug]);
-
-  const handleTextInputUpdate = (text: string) => {
-    setTextInput(text);
-  };
-  const handleTitleUpdate = (text: string) => {
-    setTitle(text);
-  };
-  const handleContributorsUpdate = (contributors: string[]) => {
-    setContributors(contributors);
-  };
 
   const handleCopyButtonClick: React.MouseEventHandler<HTMLButtonElement> = (
     event
