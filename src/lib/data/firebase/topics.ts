@@ -1,4 +1,5 @@
 import { generateSlug } from "../../constants/strings";
+import { TopicSummary } from "../../interfaces/TopicSummary";
 import { firestore } from "./firebase";
 
 export interface Topic {
@@ -23,19 +24,21 @@ export const topics = {
     }
   },
 
-  async findAll() {
+  async findAll(): Promise<TopicSummary[]> {
     try {
-      return await firestore.find("topics");
+      return (await firestore.find("topics")) as TopicSummary[];
     } catch (e) {
       console.error("Error fetching documents: ", e);
+      throw new Error("Error fetching documents");
     }
   },
 
-  async findById(id: string) {
+  async findById(id: string): Promise<TopicSummary> {
     try {
-      return await firestore.findById("topics", id);
+      return (await firestore.findById("topics", id)) as TopicSummary;
     } catch (e) {
       console.error("Error fetching document: ", e);
+      throw new Error("Error fetching document");
     }
   },
 };

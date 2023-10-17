@@ -1,4 +1,5 @@
 import { SampleUnselectedProp } from "../interfaces/Editor";
+import { TopicSummary } from "../interfaces/TopicSummary";
 import { Exercise, exercises } from "./firebase/exercises";
 import { topics } from "./firebase/topics";
 import {
@@ -24,7 +25,7 @@ export const topic = {
     }
     // else
     // pull from Firestore
-    topic = (await topics.findById(slug)) as SampleUnselectedProp;
+    topic = (await topics.findById(slug)) as unknown as SampleUnselectedProp;
 
     // add to IndexedDB
     if (topic) {
