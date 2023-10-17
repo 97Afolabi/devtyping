@@ -22,7 +22,7 @@ export default function Sidebar({
     menuText = "Home";
   }
   return (
-    <div className="basis-1/5 flex flex-col bg-slate-100 lg:max-2xl:rounded-l-lg max-lg:rounded-t-lg py-3 overflow-y-auto">
+    <div className="basis-1/5 max-h-screen flex flex-col bg-slate-100 lg:max-2xl:rounded-l-lg max-lg:rounded-t-lg py-3 overflow-y-scroll">
       <Link
         href={menuLink}
         className="min-h-8 w-full bg-white py-1 px-4 mb-4 font-sans font-semibold"
