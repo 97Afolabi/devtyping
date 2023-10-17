@@ -36,7 +36,14 @@ export const firestore = {
     try {
       const querySnapshot = await getDocs(collection(db, collName));
       const documents: any[] = [];
-      querySnapshot.forEach((doc) => documents.push(doc.data()));
+      querySnapshot.forEach((doc) =>
+        documents.push({
+          ...doc.data(),
+          // Only plain objects can be passed to Client Components from Server Components
+          createdAt: doc.data().createdAt.toDate(),
+          updatedAt: doc.data().updatedAt.toDate(),
+        })
+      );
       return documents;
     } catch (e) {
       console.error("Error fetching documents: ", e);
@@ -49,7 +56,12 @@ export const firestore = {
       const docRef = doc(db, collection, id);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        return docSnap.data();
+        return {
+          ...docSnap.data(),
+          // Only plain objects can be passed to Client Components from Server Components
+          createdAt: docSnap.data().createdAt.toDate(),
+          updatedAt: docSnap.data().updatedAt.toDate(),
+        };
       } else {
         console.log("Document not found");
       }
@@ -69,7 +81,14 @@ export const firestore = {
       const querySnapshot = await getDocs(q);
 
       const documents: any[] = [];
-      querySnapshot.forEach((doc) => documents.push(doc.data()));
+      querySnapshot.forEach((doc) =>
+        documents.push({
+          ...doc.data(),
+          // Only plain objects can be passed to Client Components from Server Components
+          createdAt: doc.data().createdAt.toDate(),
+          updatedAt: doc.data().updatedAt.toDate(),
+        })
+      );
       return documents;
     } catch (e) {
       console.error("Error fetching documents: ", e);
