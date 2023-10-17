@@ -80,6 +80,7 @@ export const exercises = {
       await firestore.save("exercise_details", filteredDetails);
     } catch (e) {
       console.error("Error adding document: ", e);
+      throw new Error("Error adding document");
     }
   },
 
@@ -93,11 +94,8 @@ export const exercises = {
       )) as ExerciseSummary[];
       return data;
     } catch (e) {
-      if (e) {
-        console.error("Error fetching documents: ", e);
-        throw new Error("Error fetching documents: ", e);
-      }
-      return [];
+      console.error("Error fetching documents: ", e);
+      throw new Error("Error fetching documents");
     }
   },
 
@@ -116,7 +114,7 @@ export const exercises = {
       return { summary, detail };
     } catch (e) {
       console.error("Error fetching document: ", e);
-      return {} as { summary: ExerciseSummary; detail: SampleSelectedProp };
+      throw new Error("Error fetching document");
     }
   },
 };

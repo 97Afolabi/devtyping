@@ -27,30 +27,20 @@ export default function SampleSelected({
       if (!data) {
         // TODO: show 404
       }
-      handleTitleUpdate(data.title);
-      handleTextInputUpdate(data.text);
+      setTitle(data.title);
+      setTextInput(data.text);
       setChallengeContent(replaceHTMLChar(data.text));
       if (data.contributors) {
-        handleContributorsUpdate(data.contributors);
+        setContributors(data.contributors);
       }
     };
 
     getExercise();
   }, [exerciseSlug]);
 
-  const handleTextInputUpdate = (text: string) => {
-    setTextInput(text);
-  };
-  const handleTitleUpdate = (text: string) => {
-    setTitle(text);
-  };
-  const handleContributorsUpdate = (contributors: string[]) => {
-    setContributors(contributors);
-  };
-
-  const handleCopyButtonClick: React.MouseEventHandler<HTMLButtonElement> = (
-    event
-  ) => {
+  const handleCopyButtonClick: React.MouseEventHandler<
+    HTMLButtonElement
+  > = () => {
     navigator.clipboard.writeText(inputValue).then(null);
     setCopyButtonText("Copied");
   };
@@ -105,8 +95,11 @@ export default function SampleSelected({
         contributors={contributors}
         sampleSelected={true}
       ></Sidebar>
-      <div className="basis-4/5 flex flex-col justify-between bg-slate-100 lg:max-2xl:rounded-r-lg max-lg:rounded-b-lg overflow-scroll py-3">
-        <section className="w-full font-mono font-semibold">
+      <div className="basis-4/5 max-h-screen flex flex-col justify-between bg-slate-100 lg:max-2xl:rounded-r-lg max-lg:rounded-b-lg py-3">
+        <section
+          className="w-full font-mono font-semibold"
+          style={{ maxHeight: "80%" }}
+        >
           <section
             className="flex h-8 justify-between py-1 px-4 bg-white"
             style={{
@@ -116,7 +109,7 @@ export default function SampleSelected({
             <div id="title">{title}</div>
             <Timer isTyping={isTimerRunning}></Timer>
           </section>
-          <pre className="p-2">
+          <pre className="p-2 overflow-scroll max-h-full">
             <code
               className="text-start text-gray-700"
               id="challenge"
