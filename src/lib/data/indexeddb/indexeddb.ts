@@ -1,25 +1,32 @@
 "use client";
-import { openDB } from "idb";
+import { IDBPDatabase, openDB } from "idb";
 import { Topics } from "../../interfaces/IndexedDB";
 import { ExerciseDetails, ExerciseSummary } from "../firebase/exercises";
 
-export const indexedDbSupported =
+const indexedDbSupported =
   typeof window !== "undefined" && "indexedDB" in window;
 
-const dbPromise = openDB("devtyping", 1, {
-  upgrade(db) {
-    db.createObjectStore("topics", {
-      keyPath: "slug",
-    });
-    const exercisesStore = db.createObjectStore("exercises", {
-      keyPath: "slug",
-    });
-    db.createObjectStore("exercise_details", {
-      keyPath: "slug",
-    });
-    exercisesStore.createIndex("topicSlug", "topicSlug");
-  },
-});
+let dbPromise: Promise<IDBPDatabase<unknown>>;
+if (indexedDbSupported) {
+  dbPromise = openDB("devtyping", 1, {
+    upgrade(db) {
+      db.createObjectStore("topics", {
+        keyPath: "slug",
+      });
+      const exercisesStore = db.createObjectStore("exercises", {
+        keyPath: "slug",
+      });
+      exercisesStore.createIndex("topicSlug", "topicSlug");
+      db.createObjectStore("exercise_details", {
+        keyPath: "slug",
+      });
+    },
+  });
+  // } else {
+  //   // TODO: handle browsers without IndexedDB support
+  //   console.error("IndexedDB not supported");
+  //   throw new Error("IndexedDB not supported");
+}
 
 const indexedDB = {
   async set(collection: string, value: unknown) {
