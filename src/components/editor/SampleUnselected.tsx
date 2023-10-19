@@ -45,10 +45,10 @@ export default function SampleUnselected({ slug }: { slug: string }) {
       <div className="basis-4/5 flex flex-col justify-between bg-slate-100 lg:max-2xl:rounded-r-lg max-lg:rounded-b-lg overflow-scroll py-3">
         <section className="w-full font-mono font-semibold">
           <section className="flex h-8 justify-between bg-white py-1 px-4">
-            <div id="title">{title}</div>
+            <div>{title}</div>
           </section>
-          <article className="text-start text-gray-700" id="challenge">
-            <p>{description}</p>
+          <article className="flex flex-col items-center justify-center h-full text-gray-700">
+            <p className="mb-5">{description}</p>
             <p>Select a sample to begin</p>
           </article>
         </section>
