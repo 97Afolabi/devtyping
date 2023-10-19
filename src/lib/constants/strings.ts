@@ -38,10 +38,14 @@ export function generateExerciseSlug(title: string): string {
   }
 }
 
-function escapeCharacters(input: string): string {
-  return input
-    .replaceAll("\n", "\\n")
-    .replaceAll("'", "\\'")
-    .replaceAll('"', '\\"')
-    .replaceAll("\t", " ");
+export function adjustSpaces(input: string): string {
+  return (
+    input
+      // reduce line breaks
+      .replaceAll("\n\n\n", "\n\n")
+      // convert 4 spaces to 2
+      .replaceAll("    ", "  ")
+      // convert tabs to spaces
+      .replaceAll("\t", "  ")
+  );
 }

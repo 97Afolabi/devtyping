@@ -13,10 +13,10 @@ import {
 import { envVars } from "../../constants/utils";
 
 // Initialize Firebase
-const app = initializeApp(envVars.firebase);
+export const firebaseApp = initializeApp( envVars.firebase );
 
 // Initialize Cloud Firestore and get a reference to the service
-const db = getFirestore(app);
+const db = getFirestore(firebaseApp);
 
 export const firestore = {
   dbHandle: db,

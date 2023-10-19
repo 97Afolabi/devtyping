@@ -130,6 +130,7 @@ export default function SampleSelected({
             value={inputValue}
             onChange={handleInputChange}
             onPaste={(e) => e.preventDefault()}
+            autoFocus={true}
           ></textarea>
           <button
             className="basis-1/12 bg-slate-800 rounded-r-lg text-white"
