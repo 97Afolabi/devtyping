@@ -1,6 +1,7 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   onAuthStateChanged,
   signInWithGithub,
@@ -76,6 +77,7 @@ export default function AuthUser() {
     <>
       {authUser ? (
         <>
+          <Link href="/contribute">Contribute</Link>
           {authUser.username}
           {" • "}
           <small>
