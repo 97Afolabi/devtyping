@@ -14,7 +14,7 @@ export default async function Home() {
       >
         {summaries &&
           summaries.map((topic: TopicSummary) => (
-            <SummaryCard data={topic} key={topic.slug}></SummaryCard>
+            <SummaryCard prefix="e" data={topic} key={topic.slug}></SummaryCard>
           ))}
       </section>
     </>

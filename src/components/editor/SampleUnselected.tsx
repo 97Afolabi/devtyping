@@ -4,7 +4,13 @@ import { topic } from "../../lib/data/data";
 import { ExerciseSummary } from "../../lib/data/firebase/exercises";
 import Sidebar from "./Sidebar";
 
-export default function SampleUnselected({ slug }: { slug: string }) {
+export default function SampleUnselected({
+  prefix,
+  slug,
+}: {
+  prefix: "e" | "review";
+  slug: string;
+}) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [samples, setSamples] = useState<ExerciseSummary[]>([]);
@@ -38,6 +44,7 @@ export default function SampleUnselected({ slug }: { slug: string }) {
     <section className="flex flex-col lg:flex-row w-full h-5/6 py-5 px-2 md:px-10 gap-3">
       <Sidebar
         data={samples}
+        prefix={prefix}
         slug={slug}
         contributors={[]}
         sampleSelected={false}

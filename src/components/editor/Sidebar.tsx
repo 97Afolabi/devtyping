@@ -3,11 +3,13 @@ import { ExerciseSummary } from "../../lib/data/firebase/exercises";
 
 export default function Sidebar({
   data,
+  prefix,
   slug,
   contributors,
   sampleSelected,
 }: {
   data: ExerciseSummary[];
+  prefix: "e" | "review";
   slug: string;
   contributors: string[];
   sampleSelected: boolean;
@@ -15,10 +17,10 @@ export default function Sidebar({
   let menuLink: string;
   let menuText: string;
   if (sampleSelected) {
-    menuLink = `/e/${slug}`;
+    menuLink = `/${prefix}/${slug}`;
     menuText = "Back";
   } else {
-    menuLink = "/";
+    menuLink = prefix == "e" ? "/" : "/review";
     menuText = "Home";
   }
   return (
@@ -40,7 +42,9 @@ export default function Sidebar({
                 key={list.slug}
                 className="py-1 mb-1 border-b hover:font-semibold hover:bg-white"
               >
-                <Link href={`/e/${slug}/${list.slug}`}>{list.title}</Link>
+                <Link href={`/${prefix}/${slug}/${list.slug}`}>
+                  {list.title}
+                </Link>
               </li>
             ))}
         </ul>
