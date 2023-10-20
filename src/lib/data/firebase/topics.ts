@@ -33,6 +33,21 @@ export const topics = {
     }
   },
 
+  async findAllInActive(): Promise<TopicSummary[]> {
+    try {
+      const data = (await firestore.findWhere(
+        "topics",
+        "isActive",
+        "==",
+        false
+      )) as TopicSummary[];
+      return data;
+    } catch (e) {
+      console.error("Error fetching documents: ", e);
+      throw new Error("Error fetching documents");
+    }
+  },
+
   async findById(id: string): Promise<TopicSummary> {
     try {
       return (await firestore.findById("topics", id)) as TopicSummary;
