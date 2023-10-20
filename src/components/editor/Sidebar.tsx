@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExerciseSummary } from "../../lib/data/firebase/exercises";
+import { ExerciseSummary } from "../../lib/data/firebase/firestore/exercises";
 
 export default function Sidebar({
   data,

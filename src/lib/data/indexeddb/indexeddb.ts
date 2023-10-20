@@ -1,7 +1,7 @@
 "use client";
 import { IDBPDatabase, openDB } from "idb";
 import { Topics } from "../../interfaces/IndexedDB";
-import { ExerciseDetails, ExerciseSummary } from "../firebase/exercises";
+import { ExerciseSummary, ExerciseDetails } from "../../interfaces/Exercise";
 
 const indexedDbSupported =
   typeof window !== "undefined" && "indexedDB" in window;

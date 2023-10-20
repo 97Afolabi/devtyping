@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { topic } from "../../lib/data/data";
-import { ExerciseSummary } from "../../lib/data/firebase/exercises";
+import { ExerciseSummary } from "../../lib/data/firebase/firestore/exercises";
 import Sidebar from "./Sidebar";
 
 export default function SampleUnselected({

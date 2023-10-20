@@ -1,19 +1,9 @@
-import { generateSlug } from "../../constants/strings";
-import { TopicSummary } from "../../interfaces/TopicSummary";
-import { firestore } from "./firebase";
+import { generateSlug } from "../../../constants/strings";
+import { Topic } from "../../../interfaces/Topic";
+import { TopicSummary } from "../../../interfaces/TopicSummary";
+import { firestore } from "./firestore";
 
-export interface Topic {
-  title: string;
-  slug?: string;
-  summary: string;
-  description: string;
-  count: number;
-  isActive: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-export const topics = {
+export const firestoreTopic = {
   async save(data: Topic) {
     try {
       const slug = generateSlug(data.title);

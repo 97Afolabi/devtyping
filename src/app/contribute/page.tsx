@@ -1,16 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { topics } from "../../lib/data/firebase/topics";
-import { exercises } from "../../lib/data/firebase/exercises";
+import { adjustSpaces } from "../../lib/constants/strings";
+import { firestoreTopic } from "../../lib/data/firebase/firestore/topics";
+import { firestoreExercise } from "../../lib/data/firebase/firestore/exercises";
 import { TopicSummary } from "../../lib/interfaces/TopicSummary";
 import { getAuthUser } from "../../components/layouts/AuthUser";
 import SuccessMessage from "../../components/editor/SuccessMessage";
 import ValidationError from "../../components/editor/ValidationError";
-import { adjustSpaces } from "../../lib/constants/strings";
 
 export default function Contribute() {
-  const router = useRouter();
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [text, setText] = useState("");
@@ -20,7 +18,7 @@ export default function Contribute() {
 
   useEffect(() => {
     const getTopics = async () => {
-      const summaries = await topics.findAll();
+      const summaries = await firestoreTopic.findAll();
       setTopicSummaries(summaries);
     };
 
@@ -58,7 +56,7 @@ export default function Contribute() {
       return null;
     }
 
-    await exercises.save({
+    await firestoreExercise.save({
       title,
       topicSlug: topic,
       text: adjustSpaces(text),
@@ -102,6 +100,7 @@ export default function Contribute() {
                 required={true}
               />
             </div>
+
             <div className="w-full lg:w-1/4 pl-2">
               <label
                 htmlFor="topic"
@@ -127,6 +126,7 @@ export default function Contribute() {
             </div>
           </div>
         </div>
+
         <div className="mb-4">
           <label
             htmlFor="text"
@@ -145,6 +145,7 @@ export default function Contribute() {
             required={true}
           />
         </div>
+
         <div className="flex justify-center">
           <button
             type="submit"

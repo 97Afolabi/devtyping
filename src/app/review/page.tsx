@@ -1,10 +1,10 @@
+import { firestoreTopic } from "../../lib/data/firebase/firestore/topics";
+import { TopicSummary } from "../../lib/interfaces/TopicSummary";
 import AnimatedTexts from "../../components/homepage/AnimatedTexts";
 import SummaryCard from "../../components/homepage/SummaryCard";
-import { topics } from "../../lib/data/firebase/topics";
-import { TopicSummary } from "../../lib/interfaces/TopicSummary";
 
 export default async function Review() {
-  const summaries = await topics.findAll();
+  const summaries = await firestoreTopic.findAll();
   return (
     <>
       <AnimatedTexts />
