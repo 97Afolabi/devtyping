@@ -9,13 +9,13 @@ export default function SummaryCard({
   prefix: "e" | "review";
   data: TopicSummary;
 }) {
-  const { title, slug, summary, count } = data;
+  const { title, slug, summary, countActive, countInactive } = data;
   const bgColor = getBgColor(slug);
   return (
     <div className={`p-4 rounded-md ${bgColor}`}>
       <strong className="text-2xl font-mono">{title}</strong>
       <span className="float-right bg-slate-900 text-white text-sm font-mono rounded-full px-1">
-        {count}
+        {prefix === "review" ? countInactive : countActive}
       </span>
       <p className="text-sm font-mono">{summary}</p>
       <Link
