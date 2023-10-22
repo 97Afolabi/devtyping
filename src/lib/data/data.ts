@@ -5,6 +5,7 @@ import { firestoreTopic } from "./firebase/firestore/topics";
 import {
   IDBExercise,
   IDBExerciseDetails,
+  IDBInactiveExercise,
   IDBTopic,
 } from "./indexeddb/indexeddb";
 
@@ -36,6 +37,38 @@ export const topic = {
       await IDBExercise.saveMany(exerciseArr);
       return topic;
     } catch (error) {
+      throw new Error("Unable to get topic");
+    }
+  },
+
+  async getInactiveExercises(slug: string): Promise<SampleUnselectedProp> {
+    try {
+      // check if it exists in IndexedDB
+      let topic: SampleUnselectedProp;
+      topic = await IDBTopic.get(slug);
+      if (topic) {
+        // add exercises summary
+        topic.samples = await IDBTopic.getInactiveExerciseSummary(slug);
+      }
+      if (topic && topic.samples.length) {
+        return topic;
+      }
+
+      // pull from Firestore
+      topic = (await firestoreTopic.findById(
+        slug
+      )) as unknown as SampleUnselectedProp;
+
+      // add to IndexedDB
+      if (topic) {
+        await IDBTopic.set(topic);
+      }
+      const exerciseArr = await firestoreExercise.findAllInactive(slug);
+      topic.samples = exerciseArr;
+      await IDBInactiveExercise.saveMany(exerciseArr);
+      return topic;
+    } catch (error) {
+      console.log("error", error);
       throw new Error("Unable to get topic");
     }
   },

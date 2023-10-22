@@ -6,20 +6,33 @@ import { ExerciseSummary, ExerciseDetails } from "../../interfaces/Exercise";
 const indexedDbSupported =
   typeof window !== "undefined" && "indexedDB" in window;
 
+const [v1, currentVersion] = [1, 2];
 let dbPromise: Promise<IDBPDatabase<unknown>>;
 if (indexedDbSupported) {
-  dbPromise = openDB("devtyping", 1, {
-    upgrade(db) {
-      db.createObjectStore("topics", {
-        keyPath: "slug",
-      });
-      const exercisesStore = db.createObjectStore("exercises", {
-        keyPath: "slug",
-      });
-      exercisesStore.createIndex("topicSlug", "topicSlug");
-      db.createObjectStore("exercise_details", {
-        keyPath: "slug",
-      });
+  dbPromise = openDB("devtyping", currentVersion, {
+    upgrade(db, currentVersion) {
+      if (v1 < currentVersion) {
+        db.createObjectStore("topics", {
+          keyPath: "slug",
+        });
+
+        const exercisesStore = db.createObjectStore("exercises", {
+          keyPath: "slug",
+        });
+        exercisesStore.createIndex("topicSlug", "topicSlug");
+
+        db.createObjectStore("exercise_details", {
+          keyPath: "slug",
+        });
+      }
+
+      const inactiveExercisesStore = db.createObjectStore(
+        "inactive_exercises",
+        {
+          keyPath: "slug",
+        }
+      );
+      inactiveExercisesStore.createIndex("topicSlug", "topicSlug");
     },
   });
   // } else {
@@ -76,6 +89,28 @@ export const IDBExercise = {
   },
 };
 
+export const IDBInactiveExercise = {
+  async set(value: unknown) {
+    return await indexedDB.set("inactive_exercises", value);
+  },
+
+  async saveMany(exercises: ExerciseSummary[]) {
+    {
+      exercises.forEach(async (exercise) => {
+        await indexedDB.set("inactive_exercises", exercise);
+      });
+    }
+  },
+
+  async get(key: string) {
+    return await indexedDB.get("inactive_exercises", key);
+  },
+
+  async getAllKeys() {
+    return await indexedDB.keys("inactive_exercises");
+  },
+};
+
 export const IDBExerciseDetails = {
   async set(value: unknown) {
     return await indexedDB.set("exercise_details", value);
@@ -97,6 +132,14 @@ export const IDBTopic = {
 
   async getExerciseSummary(key: string): Promise<ExerciseSummary[]> {
     const exercises = await indexedDB.getFromIndex("exercises", "topicSlug");
+    return exercises.filter((exercise) => exercise.topicSlug == key);
+  },
+
+  async getInactiveExerciseSummary(key: string): Promise<ExerciseSummary[]> {
+    const exercises = await indexedDB.getFromIndex(
+      "inactive_exercises",
+      "topicSlug"
+    );
     return exercises.filter((exercise) => exercise.topicSlug == key);
   },
 

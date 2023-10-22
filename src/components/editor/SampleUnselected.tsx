@@ -16,7 +16,10 @@ export default function SampleUnselected({
   const [samples, setSamples] = useState<ExerciseSummary[]>([]);
   useEffect(() => {
     const getSamples = async () => {
-      const data = await topic.get(slug);
+      const data =
+        prefix === "review"
+          ? await topic.getInactiveExercises(slug)
+          : await topic.getActiveExercises(slug);
       if (!data) {
         // TODO: show 404
       }
@@ -26,7 +29,7 @@ export default function SampleUnselected({
     };
 
     getSamples();
-  }, [slug]);
+  }, [prefix, slug]);
 
   const handleTitleUpdate = (title: string) => {
     setTitle(title);

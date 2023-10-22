@@ -78,6 +78,28 @@ export const firestoreExercise = {
     }
   },
 
+  async findAllInactive(topicSlug: string): Promise<ExerciseSummary[]> {
+    try {
+      const data = (await firestore.findWhere(
+        "exercises",
+        {
+          field: "topicSlug",
+          operator: "==",
+          value: topicSlug,
+        },
+        {
+          field: "isActive",
+          operator: "==",
+          value: false,
+        }
+      )) as ExerciseSummary[];
+      return data;
+    } catch (e) {
+      console.error("Error fetching documents: ", e);
+      throw new Error("Error fetching documents");
+    }
+  },
+
   async findById(
     id: string
   ): Promise<{ summary: ExerciseSummary; detail: SampleSelectedProp }> {
