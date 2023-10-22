@@ -7,7 +7,7 @@ import {
   getAuth,
   getAdditionalUserInfo,
 } from "firebase/auth";
-import { firebaseApp } from "./firebase";
+import { firebaseApp } from "../firebase";
 
 export const auth = getAuth(firebaseApp);
 

@@ -1,42 +1,14 @@
-import { generateExerciseSlug } from "../../constants/strings";
-import { SampleSelectedProp } from "../../interfaces/Editor";
-import { firestore } from "./firebase";
+import { updateDoc } from "firebase/firestore";
+import { generateExerciseSlug } from "../../../constants/strings";
+import { SampleSelectedProp } from "../../../interfaces/Editor";
+import {
+  Exercise,
+  ExerciseDetails,
+  ExerciseSummary,
+} from "../../../interfaces/Exercise";
+import { firestore } from "./firestore";
 
-export interface Exercise {
-  title: string;
-  slug?: string;
-  prerequisite?: string;
-  topicSlug: string;
-  text: string;
-  author: string;
-  contributors?: string[];
-  downVotes: number;
-  upVotes: number;
-  isActive: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-export interface ExerciseSummary {
-  slug?: string;
-  title: string;
-  topicSlug: string;
-  author: string;
-  downVotes: number;
-  upVotes: number;
-  isActive: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-export interface ExerciseDetails {
-  slug?: string;
-  prerequisite?: string;
-  contributors?: string[];
-  text: string;
-}
-
-export const exercises = {
+export const firestoreExercise = {
   async save(data: Exercise) {
     try {
       const {
@@ -84,13 +56,42 @@ export const exercises = {
     }
   },
 
-  async findAll(topicSlug: string): Promise<ExerciseSummary[]> {
+  async findAllActive(topicSlug: string): Promise<ExerciseSummary[]> {
     try {
       const data = (await firestore.findWhere(
         "exercises",
-        "topicSlug",
-        "==",
-        topicSlug
+        {
+          field: "topicSlug",
+          operator: "==",
+          value: topicSlug,
+        },
+        {
+          field: "isActive",
+          operator: "==",
+          value: true,
+        }
+      )) as ExerciseSummary[];
+      return data;
+    } catch (e) {
+      console.error("Error fetching documents: ", e);
+      throw new Error("Error fetching documents");
+    }
+  },
+
+  async findAllInactive(topicSlug: string): Promise<ExerciseSummary[]> {
+    try {
+      const data = (await firestore.findWhere(
+        "exercises",
+        {
+          field: "topicSlug",
+          operator: "==",
+          value: topicSlug,
+        },
+        {
+          field: "isActive",
+          operator: "==",
+          value: false,
+        }
       )) as ExerciseSummary[];
       return data;
     } catch (e) {
@@ -115,6 +116,19 @@ export const exercises = {
     } catch (e) {
       console.error("Error fetching document: ", e);
       throw new Error("Error fetching document");
+    }
+  },
+
+  async setStatus(id: string, status: "active" | "inactive"): Promise<void> {
+    try {
+      const docRef = firestore.getDocRef("exercises", id);
+      await updateDoc(docRef, {
+        isActive: status === "active",
+        updatedAt: new Date(),
+      });
+    } catch (e) {
+      console.error("Error updating status: ", e);
+      throw new Error("Error updating status");
     }
   },
 };

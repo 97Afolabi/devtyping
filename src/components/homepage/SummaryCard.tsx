@@ -2,7 +2,13 @@ import Link from "next/link";
 import { TopicSummary } from "../../lib/interfaces/TopicSummary";
 import { getBgColor } from "../../lib/constants/bg-colors";
 
-export default function SummaryCard({ data }: { data: TopicSummary }) {
+export default function SummaryCard({
+  prefix,
+  data,
+}: {
+  prefix: "e" | "review";
+  data: TopicSummary;
+}) {
   const { title, slug, summary, count } = data;
   const bgColor = getBgColor(slug);
   return (
@@ -13,7 +19,7 @@ export default function SummaryCard({ data }: { data: TopicSummary }) {
       </span>
       <p className="text-sm font-mono">{summary}</p>
       <Link
-        href={`e/${slug}`}
+        href={`${prefix}/${slug}`}
         className="float-right bg-slate-900 text-white text-sm font-mono rounded-full mt-2 py-2 px-4"
       >
         Start

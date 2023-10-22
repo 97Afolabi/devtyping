@@ -1,4 +1,4 @@
-import { ExerciseSummary } from "../data/firebase/exercises";
+import { ExerciseSummary } from "./Exercise";
 
 export interface Topics {
   title: string;

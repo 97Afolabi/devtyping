@@ -6,11 +6,13 @@ export default function Editor({ params }: { params: { slug: string } }) {
   const [topicSlug, exerciseSlug] = [params.slug[0], params.slug[1]];
   switch (params.slug.length) {
     case 1:
-      return <SampleUnselected prefix="e" slug={topicSlug}></SampleUnselected>;
+      return (
+        <SampleUnselected prefix="review" slug={topicSlug}></SampleUnselected>
+      );
     case 2:
       return (
         <SampleSelected
-          prefix="e"
+          prefix="review"
           topicSlug={topicSlug}
           exerciseSlug={exerciseSlug}
         ></SampleSelected>

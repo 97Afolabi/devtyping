@@ -1,16 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
 import { topic } from "../../lib/data/data";
-import { ExerciseSummary } from "../../lib/data/firebase/exercises";
+import { ExerciseSummary } from "../../lib/interfaces/Exercise";
 import Sidebar from "./Sidebar";
 
-export default function SampleUnselected({ slug }: { slug: string }) {
+export default function SampleUnselected({
+  prefix,
+  slug,
+}: {
+  prefix: "e" | "review";
+  slug: string;
+}) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [samples, setSamples] = useState<ExerciseSummary[]>([]);
   useEffect(() => {
     const getSamples = async () => {
-      const data = await topic.get(slug);
+      const data =
+        prefix === "review"
+          ? await topic.getInactiveExercises(slug)
+          : await topic.getActiveExercises(slug);
       if (!data) {
         // TODO: show 404
       }
@@ -20,7 +29,7 @@ export default function SampleUnselected({ slug }: { slug: string }) {
     };
 
     getSamples();
-  }, [slug]);
+  }, [prefix, slug]);
 
   const handleTitleUpdate = (title: string) => {
     setTitle(title);
@@ -38,6 +47,7 @@ export default function SampleUnselected({ slug }: { slug: string }) {
     <section className="flex flex-col lg:flex-row w-full h-5/6 py-5 px-2 md:px-10 gap-3">
       <Sidebar
         data={samples}
+        prefix={prefix}
         slug={slug}
         contributors={[]}
         sampleSelected={false}

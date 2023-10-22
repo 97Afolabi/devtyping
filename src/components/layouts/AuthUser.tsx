@@ -6,7 +6,7 @@ import {
   onAuthStateChanged,
   signInWithGithub,
   signOut,
-} from "../../lib/data/firebase/auth";
+} from "../../lib/data/firebase/auth/auth";
 
 export function getAuthUser() {
   const localStorageSupported =
@@ -77,7 +77,10 @@ export default function AuthUser() {
     <>
       {authUser ? (
         <>
+          <Link href="/review">Review</Link>
+          {" • "}
           <Link href="/contribute">Contribute</Link>
+          {" • "}
           {authUser.username}
           {" • "}
           <small>

@@ -1,19 +1,9 @@
-import { generateSlug } from "../../constants/strings";
-import { TopicSummary } from "../../interfaces/TopicSummary";
-import { firestore } from "./firebase";
+import { generateSlug } from "../../../constants/strings";
+import { Topic } from "../../../interfaces/Topic";
+import { TopicSummary } from "../../../interfaces/TopicSummary";
+import { firestore } from "./firestore";
 
-export interface Topic {
-  title: string;
-  slug?: string;
-  summary: string;
-  description: string;
-  count: number;
-  isActive: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-export const topics = {
+export const firestoreTopic = {
   async save(data: Topic) {
     try {
       const slug = generateSlug(data.title);
@@ -27,6 +17,20 @@ export const topics = {
   async findAll(): Promise<TopicSummary[]> {
     try {
       return (await firestore.find("topics")) as TopicSummary[];
+    } catch (e) {
+      console.error("Error fetching documents: ", e);
+      throw new Error("Error fetching documents");
+    }
+  },
+
+  async findAllInActive(): Promise<TopicSummary[]> {
+    try {
+      const data = (await firestore.findWhere("topics", {
+        field: "isActive",
+        operator: "==",
+        value: false,
+      })) as TopicSummary[];
+      return data;
     } catch (e) {
       console.error("Error fetching documents: ", e);
       throw new Error("Error fetching documents");

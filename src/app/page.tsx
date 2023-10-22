@@ -1,10 +1,10 @@
 import { TopicSummary } from "../lib/interfaces/TopicSummary";
-import { topics } from "../lib/data/firebase/topics";
+import { firestoreTopic } from "../lib/data/firebase/firestore/topics";
 import AnimatedTexts from "../components/homepage/AnimatedTexts";
 import SummaryCard from "../components/homepage/SummaryCard";
 
 export default async function Home() {
-  const summaries = await topics.findAll();
+  const summaries = await firestoreTopic.findAll();
   return (
     <>
       <AnimatedTexts />
@@ -14,7 +14,7 @@ export default async function Home() {
       >
         {summaries &&
           summaries.map((topic: TopicSummary) => (
-            <SummaryCard data={topic} key={topic.slug}></SummaryCard>
+            <SummaryCard prefix="e" data={topic} key={topic.slug}></SummaryCard>
           ))}
       </section>
     </>
