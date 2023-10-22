@@ -9,7 +9,7 @@ import {
 } from "./indexeddb/indexeddb";
 
 export const topic = {
-  async get(slug: string): Promise<SampleUnselectedProp> {
+  async getActiveExercises(slug: string): Promise<SampleUnselectedProp> {
     try {
       // check if it exists in IndexedDB
       let topic: SampleUnselectedProp;
@@ -31,7 +31,7 @@ export const topic = {
       if (topic) {
         await IDBTopic.set(topic);
       }
-      const exerciseArr = await firestoreExercise.findAll(slug);
+      const exerciseArr = await firestoreExercise.findAllActive(slug);
       topic.samples = exerciseArr;
       await IDBExercise.saveMany(exerciseArr);
       return topic;

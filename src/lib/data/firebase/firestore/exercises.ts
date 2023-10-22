@@ -56,13 +56,20 @@ export const firestoreExercise = {
     }
   },
 
-  async findAll(topicSlug: string): Promise<ExerciseSummary[]> {
+  async findAllActive(topicSlug: string): Promise<ExerciseSummary[]> {
     try {
       const data = (await firestore.findWhere(
         "exercises",
-        "topicSlug",
-        "==",
-        topicSlug
+        {
+          field: "topicSlug",
+          operator: "==",
+          value: topicSlug,
+        },
+        {
+          field: "isActive",
+          operator: "==",
+          value: true,
+        }
       )) as ExerciseSummary[];
       return data;
     } catch (e) {
