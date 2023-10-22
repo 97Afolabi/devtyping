@@ -75,7 +75,7 @@ export const topic = {
 };
 
 export const exercise = {
-  async get(slug: string): Promise<Exercise> {
+  async getActive(slug: string): Promise<Exercise> {
     try {
       let exercise: Exercise;
       // check if summary and text exists in indexed db
@@ -98,6 +98,36 @@ export const exercise = {
       const { summary, detail } = data;
       // update indexed db
       await IDBExercise.set(summary);
+      await IDBExerciseDetails.set(detail);
+      return { ...summary, ...detail };
+    } catch (error) {
+      throw new Error("Unable to get exercise");
+    }
+  },
+
+  async getInactive(slug: string): Promise<Exercise> {
+    try {
+      let exercise: Exercise;
+      // check if summary and text exists in indexed db
+      exercise = await IDBInactiveExercise.get(slug);
+      if (exercise && exercise.text) {
+        return exercise;
+      }
+      if (exercise && !exercise.text) {
+        const details = await IDBExerciseDetails.get(slug);
+        if (details) {
+          // append text and contributors
+          exercise.text = details.text;
+          exercise.contributors = details.contributors;
+          return exercise;
+        }
+      }
+      // else
+      // fetch from Firestore
+      const data = await firestoreExercise.findById(slug);
+      const { summary, detail } = data;
+      // update indexed db
+      await IDBInactiveExercise.set(summary);
       await IDBExerciseDetails.set(detail);
       return { ...summary, ...detail };
     } catch (error) {

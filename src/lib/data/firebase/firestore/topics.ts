@@ -1,3 +1,4 @@
+import { updateDoc, increment } from "firebase/firestore";
 import { generateSlug } from "../../../constants/strings";
 import { Topic } from "../../../interfaces/Topic";
 import { TopicSummary } from "../../../interfaces/TopicSummary";
@@ -43,6 +44,33 @@ export const firestoreTopic = {
     } catch (e) {
       console.error("Error fetching document: ", e);
       throw new Error("Error fetching document");
+    }
+  },
+
+  async incrementCount(id: string, type: "active" | "inactive"): Promise<void> {
+    try {
+      const docRef = firestore.getDocRef("topics", id);
+      switch (type) {
+        case "active":
+          await updateDoc(docRef, {
+            countActive: increment(1),
+            countInactive: increment(-1),
+            updatedAt: new Date(),
+          });
+          break;
+        case "inactive":
+          await updateDoc(docRef, {
+            countActive: increment(-1),
+            countInactive: increment(1),
+            updatedAt: new Date(),
+          });
+          break;
+        default:
+          throw new Error("Invalid operation");
+      }
+    } catch (e) {
+      console.error("Error updating status: ", e);
+      throw new Error("Error updating status");
     }
   },
 };

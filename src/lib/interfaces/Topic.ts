@@ -3,7 +3,8 @@ export interface Topic {
   slug?: string;
   summary: string;
   description: string;
-  count: number;
+  countActive: number;
+  countInactive: number;
   isActive: boolean;
   createdAt?: Date;
   updatedAt?: Date;
