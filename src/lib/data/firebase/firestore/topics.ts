@@ -25,12 +25,11 @@ export const firestoreTopic = {
 
   async findAllInActive(): Promise<TopicSummary[]> {
     try {
-      const data = (await firestore.findWhere(
-        "topics",
-        "isActive",
-        "==",
-        false
-      )) as TopicSummary[];
+      const data = (await firestore.findWhere("topics", {
+        field: "isActive",
+        operator: "==",
+        value: false,
+      })) as TopicSummary[];
       return data;
     } catch (e) {
       console.error("Error fetching documents: ", e);
