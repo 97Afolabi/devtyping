@@ -8,6 +8,7 @@ import {
   where,
   query,
   WhereFilterOp,
+  DocumentReference,
 } from "firebase/firestore";
 import { firebaseApp } from "../firebase";
 
@@ -89,6 +90,15 @@ export const firestore = {
     } catch (e) {
       console.error("Error fetching documents: ", e);
       throw new Error("Error fetching documents");
+    }
+  },
+
+  getDocRef(collection: string, id: string): DocumentReference {
+    try {
+      return doc(db, collection, id);
+    } catch (e) {
+      console.error("Error getting reference: ", e);
+      throw new Error("Error getting reference");
     }
   },
 };

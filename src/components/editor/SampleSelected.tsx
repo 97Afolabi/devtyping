@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { replaceHTMLChar } from "../../lib/constants/strings";
+import { ExerciseSummary } from "../../lib/interfaces/Exercise";
 import { exercise } from "../../lib/data/data";
 import Sidebar from "./Sidebar";
 import Timer from "./Timer";
@@ -16,6 +17,7 @@ export default function SampleSelected({
 }) {
   const [isTimerRunning, setTimerRunning] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [data, setData] = useState<ExerciseSummary[]>([]);
   const [buttonText, setCopyButtonText] = useState("Copy");
   const [indicatorColour, setIndicatorColour] = useState("rgba(255, 255, 255)");
   const [challengeContent, setChallengeContent] = useState("");
@@ -29,6 +31,9 @@ export default function SampleSelected({
       if (!data) {
         // TODO: show 404
       }
+
+      const summary = data as ExerciseSummary;
+      setData([summary]);
       setTitle(data.title);
       setTextInput(data.text);
       setChallengeContent(replaceHTMLChar(data.text));
@@ -92,7 +97,7 @@ export default function SampleSelected({
   return (
     <section className="flex flex-col lg:flex-row w-full h-5/6 py-5 px-2 md:px-10 gap-3">
       <Sidebar
-        data={[]}
+        data={data}
         prefix={prefix}
         slug={topicSlug}
         contributors={contributors}

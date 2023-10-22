@@ -1,3 +1,4 @@
+import { updateDoc } from "firebase/firestore";
 import { generateExerciseSlug } from "../../../constants/strings";
 import { SampleSelectedProp } from "../../../interfaces/Editor";
 import {
@@ -86,6 +87,19 @@ export const firestoreExercise = {
     } catch (e) {
       console.error("Error fetching document: ", e);
       throw new Error("Error fetching document");
+    }
+  },
+
+  async setStatus(id: string, status: "active" | "inactive"): Promise<void> {
+    try {
+      const docRef = firestore.getDocRef("exercises", id);
+      await updateDoc(docRef, {
+        isActive: status === "active",
+        updatedAt: new Date(),
+      });
+    } catch (e) {
+      console.error("Error updating status: ", e);
+      throw new Error("Error updating status");
     }
   },
 };
