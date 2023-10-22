@@ -77,7 +77,10 @@ export default function AuthUser() {
     <>
       {authUser ? (
         <>
+          <Link href="/review">Review</Link>
+          {" • "}
           <Link href="/contribute">Contribute</Link>
+          {" • "}
           {authUser.username}
           {" • "}
           <small>
