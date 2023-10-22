@@ -27,7 +27,10 @@ export default function SampleSelected({
   const [contributors, setContributors] = useState<string[]>([]);
   useEffect(() => {
     const getExercise = async () => {
-      const data = await exercise.get(exerciseSlug);
+      const data =
+        prefix === "review"
+          ? await exercise.getInactive(exerciseSlug)
+          : await exercise.getActive(exerciseSlug);
       if (!data) {
         // TODO: show 404
       }
@@ -43,7 +46,7 @@ export default function SampleSelected({
     };
 
     getExercise();
-  }, [exerciseSlug]);
+  }, [exerciseSlug, prefix]);
 
   const handleCopyButtonClick: React.MouseEventHandler<
     HTMLButtonElement

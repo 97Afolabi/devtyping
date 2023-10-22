@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { ExerciseSummary } from "../../lib/interfaces/Exercise";
 import { firestoreExercise } from "../../lib/data/firebase/firestore/exercises";
-import { IDBExercise } from "../../lib/data/indexeddb/indexeddb";
+import {
+  IDBExercise,
+  IDBInactiveExercise,
+} from "../../lib/data/indexeddb/indexeddb";
+import { firestoreTopic } from "../../lib/data/firebase/firestore/topics";
 
 export default function ShowSummary({ data }: { data: ExerciseSummary }) {
   const [isActive, setIsActive] = useState(false);
@@ -19,11 +23,24 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
   ) => {
     const status = isActive ? "active" : "inactive";
     await firestoreExercise.setStatus(data.slug!, status);
-    await IDBExercise.set({
-      ...data,
-      isActive: !isActive,
-      updatedAt: new Date().toISOString(),
-    });
+    if (isActive) {
+      await IDBExercise.set({
+        ...data,
+        isActive: isActive,
+        updatedAt: new Date().toISOString(),
+      });
+      await IDBInactiveExercise.del(data.slug!);
+      await firestoreTopic.incrementCount(data.topicSlug, "active");
+    } else {
+      await IDBInactiveExercise.set({
+        ...data,
+        isActive: isActive,
+        updatedAt: new Date().toISOString(),
+      });
+      await IDBExercise.del(data.slug!);
+      await firestoreTopic.incrementCount(data.topicSlug, "inactive");
+    }
+
     setIsActive(!isActive);
   };
 

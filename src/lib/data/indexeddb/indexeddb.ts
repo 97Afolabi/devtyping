@@ -87,6 +87,10 @@ export const IDBExercise = {
   async getAllKeys() {
     return await indexedDB.keys("exercises");
   },
+
+  async del(key: string) {
+    return await indexedDB.del("exercises", key);
+  },
 };
 
 export const IDBInactiveExercise = {
@@ -108,6 +112,10 @@ export const IDBInactiveExercise = {
 
   async getAllKeys() {
     return await indexedDB.keys("inactive_exercises");
+  },
+
+  async del(key: string) {
+    return await indexedDB.del("inactive_exercises", key);
   },
 };
 
