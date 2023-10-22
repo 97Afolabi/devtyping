@@ -9,6 +9,7 @@ import {
   query,
   WhereFilterOp,
   DocumentReference,
+  QueryConstraint,
 } from "firebase/firestore";
 import { firebaseApp } from "../firebase";
 
@@ -69,12 +70,19 @@ export const firestore = {
 
   async findWhere(
     collName: string,
-    field: string,
-    operator: WhereFilterOp,
-    value: unknown
+    ...constraints: Array<{
+      field: string;
+      operator: WhereFilterOp;
+      value: unknown;
+    }>
   ): Promise<unknown[]> {
     try {
-      const q = query(collection(db, collName), where(field, operator, value));
+      const queryConstraints: QueryConstraint[] = constraints.map(
+        (constraint) =>
+          where(constraint.field, constraint.operator, constraint.value)
+      );
+
+      const q = query(collection(db, collName), ...queryConstraints);
       const querySnapshot = await getDocs(q);
 
       const documents: unknown[] = [];
