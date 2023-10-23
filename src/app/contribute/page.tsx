@@ -1,14 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { adjustSpaces } from "../../lib/constants/strings";
+import { getAuthUser } from "../../lib/data/auth";
 import { firestoreTopic } from "../../lib/data/firebase/firestore/topics";
 import { firestoreExercise } from "../../lib/data/firebase/firestore/exercises";
 import { TopicSummary } from "../../lib/interfaces/TopicSummary";
-import { getAuthUser } from "../../components/layouts/AuthUser";
 import SuccessMessage from "../../components/editor/SuccessMessage";
 import ValidationError from "../../components/editor/ValidationError";
+import isAuth from "../../components/IsAuth";
 
-export default function Contribute() {
+const Contribute = () => {
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [text, setText] = useState("");
@@ -60,7 +61,7 @@ export default function Contribute() {
       title,
       topicSlug: topic,
       text: adjustSpaces(text),
-      author: author.username,
+      author: author!.username,
       upVotes: 0,
       downVotes: 0,
       isActive: false,
@@ -157,4 +158,6 @@ export default function Contribute() {
       </form>
     </div>
   );
-}
+};
+
+export default isAuth(Contribute);

@@ -1,8 +1,10 @@
+"use client";
 import { redirect } from "next/navigation";
 import SampleSelected from "../../../components/editor/SampleSelected";
 import SampleUnselected from "../../../components/editor/SampleUnselected";
+import isAuth from "../../../components/IsAuth";
 
-export default function Editor({ params }: { params: { slug: string } }) {
+const Editor = ({ params }: { params: { slug: string } }) => {
   const [topicSlug, exerciseSlug] = [params.slug[0], params.slug[1]];
   switch (params.slug.length) {
     case 1:
@@ -20,4 +22,6 @@ export default function Editor({ params }: { params: { slug: string } }) {
     default:
       redirect("/");
   }
-}
+};
+
+export default isAuth(Editor);

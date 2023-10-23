@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { ExerciseSummary } from "../../lib/interfaces/Exercise";
+import { getAuthUser } from "../../lib/data/auth";
 import ListSamples from "./ListSamples";
 import ShareButtons from "./ShareButtons";
 import ShowSummary from "./ShowSummary";
@@ -27,6 +28,8 @@ export default function Sidebar({
     menuLink = prefix == "e" ? "/" : "/review";
     menuText = "Home";
   }
+  const auth = getAuthUser();
+
   return (
     <div className="basis-1/5 max-h-screen flex flex-col bg-slate-100 lg:max-2xl:rounded-l-lg max-lg:rounded-t-lg py-3 overflow-y-scroll">
       <Link
@@ -40,7 +43,9 @@ export default function Sidebar({
           <ListSamples data={data} prefix={prefix} slug={slug} />
         )}
 
-        {sampleSelected && data[0] && <ShowSummary data={data[0]} />}
+        {auth && auth.username && sampleSelected && data[0] && (
+          <ShowSummary data={data[0]} />
+        )}
 
         {sampleSelected && data[0] && (
           <ShareButtons
