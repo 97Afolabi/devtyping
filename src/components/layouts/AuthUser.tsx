@@ -7,19 +7,7 @@ import {
   signInWithGithub,
   signOut,
 } from "../../lib/data/firebase/auth/auth";
-
-export function getAuthUser() {
-  const localStorageSupported =
-    typeof window !== "undefined" && "localStorage" in window;
-
-  if (localStorageSupported) {
-    const dtUser = localStorage.getItem("dtUser");
-    if (!dtUser) {
-      return;
-    }
-    return JSON.parse(dtUser);
-  }
-}
+import { getAuthUser } from "../../lib/data/auth";
 
 function useUserSession(initialUser: any) {
   const [user, setUser] = useState(initialUser);
@@ -49,12 +37,14 @@ function useUserSession(initialUser: any) {
 
 export default function AuthUser() {
   useUserSession(undefined);
+  const router = useRouter();
 
   const handleSignOut = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     signOut();
 
     localStorage.removeItem("dtUser");
+    router.refresh();
   };
 
   const handleSignIn = async (event: { preventDefault: () => void }) => {
@@ -71,29 +61,29 @@ export default function AuthUser() {
     }
   };
 
-  const authUser: { id: string; username: string } = getAuthUser();
+  const authUser = getAuthUser();
 
   return (
-    <>
+    <div className="flex float-right mx-5">
       {authUser ? (
         <>
-          <Link href="/review">Review</Link>
+          <Link className="mx-2" href="/review">
+            Review
+          </Link>
           {" • "}
-          <Link href="/contribute">Contribute</Link>
+          <Link className="mx-2" href="/contribute">
+            Contribute
+          </Link>
           {" • "}
-          {authUser.username}
-          {" • "}
-          <small>
-            <a className="text-orange" href="#" onClick={handleSignOut}>
-              Sign Out
-            </a>
-          </small>
+          <a className="mx-2" href="#" onClick={handleSignOut}>
+            Sign out ({authUser.username})
+          </a>
         </>
       ) : (
         <a href="#" onClick={handleSignIn}>
           Sign in with GitHub
         </a>
       )}
-    </>
+    </div>
   );
 }
