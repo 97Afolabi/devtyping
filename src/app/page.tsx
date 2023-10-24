@@ -6,7 +6,7 @@ import SummaryCard from "../components/homepage/SummaryCard";
 export default async function Home() {
   const summaries = await firestoreTopic.findAll();
   return (
-    <>
+    <div className="mt-6">
       <AnimatedTexts />
       <section
         id="menu"
@@ -17,6 +17,6 @@ export default async function Home() {
             <SummaryCard prefix="e" data={topic} key={topic.slug}></SummaryCard>
           ))}
       </section>
-    </>
+    </div>
   );
 }

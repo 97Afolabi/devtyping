@@ -64,26 +64,26 @@ export default function AuthUser() {
   const authUser = getAuthUser();
 
   return (
-    <div className="flex float-right mx-5">
+    <>
       {authUser ? (
-        <>
-          <Link className="mx-2" href="/review">
+        <div className="flex justify-center items-center text-sm font-mono tracking-tight">
+          <Link className="mx-1 hover:underline" href="/review">
             Review
           </Link>
           {" • "}
-          <Link className="mx-2" href="/contribute">
+          <Link className="mx-1 hover:underline" href="/contribute">
             Contribute
           </Link>
           {" • "}
-          <a className="mx-2" href="#" onClick={handleSignOut}>
+          <a className="mx-1 hover:underline" href="#" onClick={handleSignOut}>
             Sign out ({authUser.username})
           </a>
-        </>
+        </div>
       ) : (
-        <a href="#" onClick={handleSignIn}>
+        <a href="#" onClick={handleSignIn} className="hover:underline">
           Sign in with GitHub
         </a>
       )}
-    </div>
+    </>
   );
 }

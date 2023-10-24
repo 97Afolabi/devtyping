@@ -1,7 +1,14 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
-    <footer className="basis-6 bg-slate-900 text-white">
-      <div className="flex justify-center">Footer</div>
+    <footer className="text-center bg-slate-900 text-white">
+      <Link
+        href="/"
+        className="font-mono text-xl font-weight-700 tracking-tight hover:underline"
+      >
+        DevTyp.i.ng
+      </Link>
     </footer>
   );
 }
