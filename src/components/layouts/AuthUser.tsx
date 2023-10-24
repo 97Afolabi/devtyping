@@ -80,9 +80,11 @@ export default function AuthUser() {
           </a>
         </div>
       ) : (
-        <a href="#" onClick={handleSignIn} className="hover:underline">
-          Sign in with GitHub
-        </a>
+        <div className="flex justify-center items-center text-sm font-mono tracking-tight">
+          <a href="#" onClick={handleSignIn} className="hover:underline">
+            Sign in with GitHub
+          </a>
+        </div>
       )}
     </>
   );
