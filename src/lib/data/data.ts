@@ -22,8 +22,7 @@ export const topic = {
       if (topic && topic.samples.length) {
         return topic;
       }
-      // else
-      // pull from Firestore
+      // else  pull from Firestore
       topic = (await firestoreTopic.findById(
         slug
       )) as unknown as SampleUnselectedProp;
@@ -37,6 +36,7 @@ export const topic = {
       await IDBExercise.saveMany(exerciseArr);
       return topic;
     } catch (error) {
+      console.error(error);
       throw new Error("Unable to get topic");
     }
   },
@@ -68,7 +68,7 @@ export const topic = {
       await IDBInactiveExercise.saveMany(exerciseArr);
       return topic;
     } catch (error) {
-      console.log("error", error);
+      console.error(error);
       throw new Error("Unable to get topic");
     }
   },
@@ -92,8 +92,7 @@ export const exercise = {
           return exercise;
         }
       }
-      // else
-      // fetch from Firestore
+      // else  fetch from Firestore
       const data = await firestoreExercise.findById(slug);
       const { summary, detail } = data;
       // update indexed db
@@ -101,6 +100,7 @@ export const exercise = {
       await IDBExerciseDetails.set(detail);
       return { ...summary, ...detail };
     } catch (error) {
+      console.error(error);
       throw new Error("Unable to get exercise");
     }
   },
@@ -122,8 +122,7 @@ export const exercise = {
           return exercise;
         }
       }
-      // else
-      // fetch from Firestore
+      // else fetch from Firestore
       const data = await firestoreExercise.findById(slug);
       const { summary, detail } = data;
       // update indexed db
@@ -131,6 +130,7 @@ export const exercise = {
       await IDBExerciseDetails.set(detail);
       return { ...summary, ...detail };
     } catch (error) {
+      console.error(error);
       throw new Error("Unable to get exercise");
     }
   },
