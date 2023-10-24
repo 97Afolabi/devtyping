@@ -1,5 +1,5 @@
 "use client";
-import { IDBPDatabase, openDB } from "idb";
+import { IDBPDatabase, deleteDB, openDB } from "idb";
 import { Topics } from "../../interfaces/IndexedDB";
 import { ExerciseSummary, ExerciseDetails } from "../../interfaces/Exercise";
 
@@ -44,6 +44,12 @@ if (indexedDbSupported) {
   //   console.error("IndexedDB not supported");
   //   throw new Error("IndexedDB not supported");
 }
+
+export const deleteIDB = async () => {
+  if (indexedDbSupported) {
+    await deleteDB("devtyping");
+  }
+};
 
 const indexedDB = {
   async set(collection: string, value: unknown) {

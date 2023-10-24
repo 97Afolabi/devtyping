@@ -7,6 +7,7 @@ import {
   IDBExerciseDetails,
   IDBInactiveExercise,
   IDBTopic,
+  deleteIDB,
 } from "./indexeddb/indexeddb";
 
 export const topic = {
@@ -37,7 +38,8 @@ export const topic = {
       return topic;
     } catch (error) {
       console.error(error);
-      throw new Error("Unable to get topic");
+      await deleteIDB();
+      throw new Error("Unable to get topic. Please refresh the page");
     }
   },
 
@@ -69,7 +71,8 @@ export const topic = {
       return topic;
     } catch (error) {
       console.error(error);
-      throw new Error("Unable to get topic");
+      await deleteIDB();
+      throw new Error("Unable to get topic. Please refresh the page");
     }
   },
 };
@@ -101,7 +104,8 @@ export const exercise = {
       return { ...summary, ...detail };
     } catch (error) {
       console.error(error);
-      throw new Error("Unable to get exercise");
+      await deleteIDB();
+      throw new Error("Unable to get exercise. Please refresh the page");
     }
   },
 
@@ -131,7 +135,8 @@ export const exercise = {
       return { ...summary, ...detail };
     } catch (error) {
       console.error(error);
-      throw new Error("Unable to get exercise");
+      await deleteIDB();
+      throw new Error("Unable to get exercise. Please refresh the page");
     }
   },
 };
