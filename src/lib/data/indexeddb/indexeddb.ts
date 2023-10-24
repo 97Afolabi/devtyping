@@ -6,12 +6,14 @@ import { ExerciseSummary, ExerciseDetails } from "../../interfaces/Exercise";
 const indexedDbSupported =
   typeof window !== "undefined" && "indexedDB" in window;
 
-const [v1, currentVersion] = [1, 2];
 let dbPromise: Promise<IDBPDatabase<unknown>>;
 if (indexedDbSupported) {
-  dbPromise = openDB("devtyping", currentVersion, {
-    upgrade(db, currentVersion) {
-      if (v1 < currentVersion) {
+  const dbName = "devtyping";
+  const dbVersion = 2;
+
+  dbPromise = openDB(dbName, dbVersion, {
+    upgrade(db, oldVersion, newVersion) {
+      if (oldVersion < 1) {
         db.createObjectStore("topics", {
           keyPath: "slug",
         });
@@ -26,13 +28,15 @@ if (indexedDbSupported) {
         });
       }
 
-      const inactiveExercisesStore = db.createObjectStore(
-        "inactive_exercises",
-        {
-          keyPath: "slug",
-        }
-      );
-      inactiveExercisesStore.createIndex("topicSlug", "topicSlug");
+      if (oldVersion < 2) {
+        const inactiveExercisesStore = db.createObjectStore(
+          "inactive_exercises",
+          {
+            keyPath: "slug",
+          }
+        );
+        inactiveExercisesStore.createIndex("topicSlug", "topicSlug");
+      }
     },
   });
   // } else {
