@@ -57,8 +57,8 @@ export default function SampleUnselected({
           <section className="flex h-8 justify-between bg-white py-1 px-4">
             <div>{title}</div>
           </section>
-          <article className="flex flex-col items-center justify-center h-full text-gray-700">
-            <p className="mb-5">{description}</p>
+          <article className="flex flex-col items-center justify-center h-full mx-5 whitespace-pre-line text-gray-700">
+            <p className="text-sm mb-5">{description}</p>
             <p>Select a sample to begin</p>
           </article>
         </section>

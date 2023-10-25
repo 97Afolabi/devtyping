@@ -4,6 +4,7 @@ const bgColors = {
   glossary: "bg-white",
   html: "bg-green-200",
   configs: "bg-orange-600",
+  python: "bg-yellow-300",
 };
 
 export function getBgColor(id: string): string {
