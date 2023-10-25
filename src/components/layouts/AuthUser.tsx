@@ -8,6 +8,7 @@ import {
   signOut,
 } from "../../lib/data/firebase/auth/auth";
 import { getAuthUser } from "../../lib/data/auth";
+import { firestoreUser } from "../../lib/data/firebase/firestore/users";
 
 function useUserSession(initialUser: any) {
   const [user, setUser] = useState(initialUser);
@@ -50,15 +51,11 @@ export default function AuthUser() {
   const handleSignIn = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
     const data = await signInWithGithub();
-    if (data && data.userId) {
-      localStorage.setItem(
-        "dtUser",
-        JSON.stringify({
-          id: data.userId,
-          username: data.userName,
-        })
-      );
+    if (data && data.slug) {
+      const firestoreData = await firestoreUser.findById(data.slug);
+      localStorage.setItem("dtUser", JSON.stringify(firestoreData));
     }
+    router.refresh();
   };
 
   const authUser = getAuthUser();

@@ -1,4 +1,4 @@
-export function getAuthUser(): { id: string; username: string } | null {
+export function getAuthUser(): { username: string; isAdmin: boolean } | null {
   const localStorageSupported =
     typeof window !== "undefined" && "localStorage" in window;
 
