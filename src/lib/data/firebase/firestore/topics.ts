@@ -47,21 +47,44 @@ export const firestoreTopic = {
     }
   },
 
-  async incrementCount(id: string, type: "active" | "inactive"): Promise<void> {
+  async updateActiveCount(id: string, type: "up" | "down"): Promise<void> {
     try {
       const docRef = firestore.getDocRef("topics", id);
       switch (type) {
-        case "active":
+        case "up":
           await updateDoc(docRef, {
             countActive: increment(1),
-            countInactive: increment(-1),
             updatedAt: new Date(),
           });
           break;
-        case "inactive":
+        case "down":
           await updateDoc(docRef, {
             countActive: increment(-1),
+            updatedAt: new Date(),
+          });
+          break;
+        default:
+          throw new Error("Invalid operation");
+      }
+    } catch (e) {
+      console.error("Error updating status: ", e);
+      throw new Error("Error updating status");
+    }
+  },
+
+  async updateInactiveCount(id: string, type: "up" | "down"): Promise<void> {
+    try {
+      const docRef = firestore.getDocRef("topics", id);
+      switch (type) {
+        case "up":
+          await updateDoc(docRef, {
             countInactive: increment(1),
+            updatedAt: new Date(),
+          });
+          break;
+        case "down":
+          await updateDoc(docRef, {
+            countInactive: increment(-1),
             updatedAt: new Date(),
           });
           break;

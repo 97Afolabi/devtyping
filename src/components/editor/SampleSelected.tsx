@@ -122,7 +122,7 @@ export default function SampleSelected({
           </section>
           <pre className="p-2 overflow-scroll max-h-full">
             <code
-              className="pb-3 text-start text-gray-700"
+              className="pb-3 text-start select-none text-gray-700"
               id="challenge"
               dangerouslySetInnerHTML={{ __html: challengeContent }}
               style={{ whiteSpace: "pre-wrap" }}

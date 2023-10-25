@@ -1,10 +1,11 @@
 const bgColors = {
-  css: "bg-pink-500",
-  golang: "bg-sky-400",
-  glossary: "bg-white",
-  html: "bg-green-200",
-  configs: "bg-orange-600",
-  python: "bg-yellow-300",
+  configs: "hover:bg-orange-600",
+  css: "hover:bg-pink-500",
+  glossary: "hover:bg-white",
+  golang: "hover:bg-sky-400",
+  html: "hover:bg-green-200",
+  php: "hover:bg-purple-500",
+  python: "hover:bg-yellow-300",
 };
 
 export function getBgColor(id: string): string {
