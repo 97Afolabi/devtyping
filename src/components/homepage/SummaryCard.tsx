@@ -12,7 +12,9 @@ export default function SummaryCard({
   const { title, slug, summary, countActive, countInactive } = data;
   const bgColor = getBgColor(slug);
   return (
-    <div className={`p-4 rounded-md ${bgColor}`}>
+    <div
+      className={`p-4 rounded-md border-solid border-2 border-slate-900 ${bgColor}`}
+    >
       <strong className="text-2xl font-mono">{title}</strong>
       <span className="float-right bg-slate-900 text-white text-sm font-mono rounded-full px-1">
         {prefix === "review" ? countInactive : countActive}

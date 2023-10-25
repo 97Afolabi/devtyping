@@ -72,7 +72,11 @@ export default function AuthUser() {
             Contribute
           </Link>
           {" • "}
-          <a className="mx-1 hover:underline" href="#" onClick={handleSignOut}>
+          <a
+            className="mx-1 text-xs hover:underline"
+            href="#"
+            onClick={handleSignOut}
+          >
             Sign out ({authUser.username})
           </a>
         </div>
