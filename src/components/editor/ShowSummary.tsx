@@ -27,8 +27,7 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
     data: ExerciseSummary,
     isActive: boolean
   ) => {
-    const status = isActive ? "active" : "inactive";
-    await firestoreExercise.setStatus(data.slug!, status);
+    await firestoreExercise.setStatus(data.slug!, isActive);
     if (isActive) {
       await IDBExercise.set({
         ...data,
@@ -36,7 +35,8 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
         updatedAt: new Date().toISOString(),
       });
       await IDBInactiveExercise.del(data.slug!);
-      await firestoreTopic.incrementCount(data.topicSlug, "active");
+      await firestoreTopic.updateActiveCount(data.topicSlug, "up");
+      await firestoreTopic.updateInactiveCount(data.topicSlug, "down");
     } else {
       await IDBInactiveExercise.set({
         ...data,
@@ -44,7 +44,8 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
         updatedAt: new Date().toISOString(),
       });
       await IDBExercise.del(data.slug!);
-      await firestoreTopic.incrementCount(data.topicSlug, "inactive");
+      await firestoreTopic.updateActiveCount(data.topicSlug, "down");
+      await firestoreTopic.updateInactiveCount(data.topicSlug, "up");
     }
 
     setIsActive(!isActive);

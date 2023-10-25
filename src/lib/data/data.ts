@@ -1,3 +1,4 @@
+import { adjustSpaces } from "../constants/strings";
 import { SampleUnselectedProp } from "../interfaces/Editor";
 import { Exercise } from "../interfaces/Exercise";
 import { firestoreExercise } from "./firebase/firestore/exercises";
@@ -78,6 +79,31 @@ export const topic = {
 };
 
 export const exercise = {
+  async save({
+    title,
+    topic,
+    text,
+    author,
+  }: {
+    title: string;
+    topic: string;
+    text: string;
+    author: string;
+  }): Promise<void> {
+    try {
+      await firestoreExercise.save({
+        title,
+        topicSlug: topic,
+        text: adjustSpaces(text),
+        author,
+        upVotes: 0,
+        downVotes: 0,
+        isActive: false,
+      });
+
+      await firestoreTopic.updateInactiveCount(topic, "up");
+    } catch (error) {}
+  },
   async getActive(slug: string): Promise<Exercise> {
     try {
       let exercise: Exercise;

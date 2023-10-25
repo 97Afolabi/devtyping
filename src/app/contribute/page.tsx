@@ -1,9 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { adjustSpaces } from "../../lib/constants/strings";
 import { getAuthUser } from "../../lib/data/auth";
 import { firestoreTopic } from "../../lib/data/firebase/firestore/topics";
-import { firestoreExercise } from "../../lib/data/firebase/firestore/exercises";
+import { exercise } from "../../lib/data/data";
 import { TopicSummary } from "../../lib/interfaces/TopicSummary";
 import SuccessMessage from "../../components/editor/SuccessMessage";
 import ValidationError from "../../components/editor/ValidationError";
@@ -57,15 +56,7 @@ const Contribute = () => {
       return null;
     }
 
-    await firestoreExercise.save({
-      title,
-      topicSlug: topic,
-      text: adjustSpaces(text),
-      author: author!.username,
-      upVotes: 0,
-      downVotes: 0,
-      isActive: false,
-    });
+    await exercise.save({ title, topic, text, author: author!.username });
 
     setSuccess([
       "Thank you for contributing!",

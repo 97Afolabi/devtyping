@@ -119,11 +119,11 @@ export const firestoreExercise = {
     }
   },
 
-  async setStatus(id: string, status: "active" | "inactive"): Promise<void> {
+  async setStatus(id: string, isActive: boolean): Promise<void> {
     try {
       const docRef = firestore.getDocRef("exercises", id);
       await updateDoc(docRef, {
-        isActive: status === "active",
+        isActive,
         updatedAt: new Date(),
       });
     } catch (e) {
