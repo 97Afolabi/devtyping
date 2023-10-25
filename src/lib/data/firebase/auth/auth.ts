@@ -8,6 +8,7 @@ import {
   getAdditionalUserInfo,
 } from "firebase/auth";
 import { firebaseApp } from "../firebase";
+import { firestoreUser } from "../firestore/users";
 
 export const auth = getAuth(firebaseApp);
 
@@ -30,13 +31,24 @@ export async function signInWithGithub() {
 
       // The signed-in user info.
       const user = result.user;
+      if (!user) {
+        throw new Error("Failed to get user info");
+      }
 
-      return {
-        userId: user.uid,
-        userName: getAdditionalUserInfo(result)?.username,
+      const data = {
+        slug: user.uid,
+        username: getAdditionalUserInfo(result)!.username!,
       };
+
+      if (user.metadata.creationTime === user.metadata.lastSignInTime) {
+        // create new user
+        await firestoreUser.save(data);
+      }
+
+      return data;
     } catch (error) {
       console.error("Error signing in with Github", error);
+      throw new Error("Error signing in with Github");
     }
   }
 }

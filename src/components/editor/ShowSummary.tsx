@@ -6,12 +6,18 @@ import {
   IDBInactiveExercise,
 } from "../../lib/data/indexeddb/indexeddb";
 import { firestoreTopic } from "../../lib/data/firebase/firestore/topics";
+import { getAuthUser } from "../../lib/data/auth";
 
 export default function ShowSummary({ data }: { data: ExerciseSummary }) {
   const [isActive, setIsActive] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
-    const setStatus = async (isActive: boolean) => {
+    const setStatus = (isActive: boolean) => {
       setIsActive(isActive);
+
+      const authUser = getAuthUser();
+      setIsAdmin(authUser!.isAdmin);
     };
 
     setStatus(data.isActive);
@@ -82,15 +88,18 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
           ({data.downVotes})
         </span>
       </p>
-      <p>
-        <button
-          type="button"
-          className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
-          onClick={() => handleStatusUpdate(data, isActive)}
-        >
-          {isActive ? "Deactivate" : "Activate"}
-        </button>
-      </p>
+
+      {isAdmin && (
+        <p>
+          <button
+            type="button"
+            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+            onClick={() => handleStatusUpdate(data, isActive)}
+          >
+            {isActive ? "Deactivate" : "Activate"}
+          </button>
+        </p>
+      )}
       <p>
         Date: {data.createdAt?.toLocaleDateString()}{" "}
         {data.createdAt?.toLocaleTimeString()}

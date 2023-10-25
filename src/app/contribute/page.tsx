@@ -7,7 +7,7 @@ import { firestoreExercise } from "../../lib/data/firebase/firestore/exercises";
 import { TopicSummary } from "../../lib/interfaces/TopicSummary";
 import SuccessMessage from "../../components/editor/SuccessMessage";
 import ValidationError from "../../components/editor/ValidationError";
-import isAuth from "../../components/IsAuth";
+import { isAuth } from "../../components/IsAuth";
 
 const Contribute = () => {
   const [title, setTitle] = useState("");
@@ -77,54 +77,52 @@ const Contribute = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex justify-center items-center min-h-screen mx-3">
       <form onSubmit={handleFormSubmission} className="w-full max-w-lg">
         {errors.length > 0 && <ValidationError errors={errors} />}
         {success.length > 0 && <SuccessMessage messages={success} />}
-        <div className="mb-4">
-          <div className="flex">
-            <div className="w-full lg:w-3/4">
-              <label
-                htmlFor="title"
-                className="block text-gray-700 text-sm font-bold mb-2"
-              >
-                Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={title}
-                onChange={handleTitleUpdate}
-                className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="Enter title"
-                required={true}
-              />
-            </div>
+        <div className="flex flex-col md:flex-row">
+          <div className="w-full md:w-3/4 mb-4">
+            <label
+              htmlFor="title"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Title
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={title}
+              onChange={handleTitleUpdate}
+              className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Enter title"
+              required={true}
+            />
+          </div>
 
-            <div className="w-full lg:w-1/4 pl-2">
-              <label
-                htmlFor="topic"
-                className="block text-gray-700 text-sm font-bold mb-2"
-              >
-                Topic
-              </label>
-              <select
-                id="topic"
-                name="topic"
-                value={topic}
-                onChange={handleTopicUpdate}
-                className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
-              >
-                <option>Choose</option>
-                {topicSummaries &&
-                  topicSummaries.map((topic: TopicSummary) => (
-                    <option value={topic.slug} key={topic.slug}>
-                      {topic.title}
-                    </option>
-                  ))}
-              </select>
-            </div>
+          <div className="w-full md:w-1/4 md:pl-2 mb-4">
+            <label
+              htmlFor="topic"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Topic
+            </label>
+            <select
+              id="topic"
+              name="topic"
+              value={topic}
+              onChange={handleTopicUpdate}
+              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
+            >
+              <option>Choose</option>
+              {topicSummaries &&
+                topicSummaries.map((topic: TopicSummary) => (
+                  <option value={topic.slug} key={topic.slug}>
+                    {topic.title}
+                  </option>
+                ))}
+            </select>
           </div>
         </div>
 

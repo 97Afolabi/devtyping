@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "../lib/data/auth";
 
-export default function isAuth(Component: any) {
+function isAuth(Component: any) {
   return function IsAuth(props: any) {
     useEffect(() => {
       const auth = getAuthUser();
@@ -15,3 +15,18 @@ export default function isAuth(Component: any) {
     return <Component {...props} />;
   };
 }
+
+function isAdmin(Component: any) {
+  return function IsAuth(props: any) {
+    useEffect(() => {
+      const auth = getAuthUser();
+      if (!auth || !auth.isAdmin) {
+        return redirect("/");
+      }
+    }, []);
+
+    return <Component {...props} />;
+  };
+}
+
+export { isAuth, isAdmin };
