@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import SampleSelected from "../../../components/editor/SampleSelected";
 import SampleUnselected from "../../../components/editor/SampleUnselected";
-import isAuth from "../../../components/IsAuth";
+import { isAuth } from "../../../components/IsAuth";
 
 const Editor = ({ params }: { params: { slug: string } }) => {
   const [topicSlug, exerciseSlug] = [params.slug[0], params.slug[1]];
