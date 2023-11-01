@@ -11,10 +11,7 @@ export default function ListSamples({
   slug: string;
 }) {
   return (
-    <ul
-      id="samples"
-      className="list-inside list-image-[url('/icons/sample-icon.svg')] overflow-y-scroll px-3 font-sans text-slate-600"
-    >
+    <ul className="list-inside list-image-[url('/icons/sample-icon.svg')] overflow-y-scroll px-3 font-sans text-slate-600">
       {data.map((list) => (
         <li
           key={list.slug}

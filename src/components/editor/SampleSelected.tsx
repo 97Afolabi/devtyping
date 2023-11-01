@@ -98,7 +98,7 @@ export default function SampleSelected({
   };
 
   return (
-    <section className="flex flex-col lg:flex-row w-full h-5/6 py-5 px-2 md:px-10 gap-3">
+    <>
       <Sidebar
         data={data}
         prefix={prefix}
@@ -106,7 +106,7 @@ export default function SampleSelected({
         contributors={contributors}
         sampleSelected={true}
       ></Sidebar>
-      <div className="basis-4/5 max-h-screen flex flex-col justify-between bg-slate-100 lg:max-2xl:rounded-r-lg max-lg:rounded-b-lg py-3">
+      <div className="basis-4/5 md:h-full flex flex-col justify-between bg-slate-100 lg:max-2xl:rounded-r-lg max-lg:rounded-b-lg py-3">
         <section
           className="w-full font-mono font-semibold"
           style={{ maxHeight: "80%" }}
@@ -151,6 +151,6 @@ export default function SampleSelected({
           </button>
         </section>
       </div>
-    </section>
+    </>
   );
 }
