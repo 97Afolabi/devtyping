@@ -44,7 +44,7 @@ export default function SampleUnselected({
   };
 
   return (
-    <section className="flex flex-col lg:flex-row w-full h-5/6 py-5 px-2 md:px-10 gap-3">
+    <>
       <Sidebar
         data={samples}
         prefix={prefix}
@@ -63,6 +63,6 @@ export default function SampleUnselected({
           </article>
         </section>
       </div>
-    </section>
+    </>
   );
 }
