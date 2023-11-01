@@ -13,19 +13,23 @@ export default function SummaryCard({
   const bgColor = getBgColor(slug);
   return (
     <div
-      className={`p-4 rounded-md border-solid border-2 border-slate-900 ${bgColor}`}
+      className={`flex flex-col justify-between p-4 rounded-md border-solid border-2 border-slate-900 bg-white ${bgColor}`}
     >
-      <strong className="text-2xl font-mono">{title}</strong>
-      <span className="float-right bg-slate-900 text-white text-sm font-mono rounded-full px-1">
-        {prefix === "review" ? countInactive : countActive}
-      </span>
+      <div>
+        <strong className="text-2xl font-mono">{title}</strong>
+        <span className="float-right bg-slate-900 text-white text-sm font-mono rounded-full px-1">
+          {prefix === "review" ? countInactive : countActive}
+        </span>
+      </div>
       <p className="text-sm font-mono">{summary}</p>
-      <Link
-        href={`${prefix}/${slug}`}
-        className="float-right bg-slate-900 text-white text-sm font-mono rounded-full mt-2 py-2 px-4"
-      >
-        Start
-      </Link>
+      <div>
+        <Link
+          href={`${prefix}/${slug}`}
+          className="float-right bg-slate-900 text-white text-sm font-mono rounded-full mt-2 py-2 px-4"
+        >
+          Start
+        </Link>
+      </div>
     </div>
   );
 }
