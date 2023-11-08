@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { TopicSummary } from "../../lib/interfaces/TopicSummary";
 import { getBgColor } from "../../lib/constants/bg-colors";

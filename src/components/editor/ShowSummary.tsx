@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { ExerciseSummary } from "../../lib/interfaces/Exercise";
 import { firestoreExercise } from "../../lib/data/firebase/firestore/exercises";
 import {
@@ -11,6 +12,7 @@ import { getAuthUser } from "../../lib/data/auth";
 export default function ShowSummary({ data }: { data: ExerciseSummary }) {
   const [isActive, setIsActive] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const setStatus = (isActive: boolean) => {
@@ -27,28 +29,32 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
     data: ExerciseSummary,
     isActive: boolean
   ) => {
-    await firestoreExercise.setStatus(data.slug!, isActive);
+    await firestoreExercise.setStatus(data.slug!, !isActive);
     if (isActive) {
-      await IDBExercise.set({
-        ...data,
-        isActive: isActive,
-        updatedAt: new Date().toISOString(),
-      });
-      await IDBInactiveExercise.del(data.slug!);
-      await firestoreTopic.updateActiveCount(data.topicSlug, "up");
-      await firestoreTopic.updateInactiveCount(data.topicSlug, "down");
+      await Promise.all([
+        IDBExercise.set({
+          ...data,
+          isActive: isActive,
+          updatedAt: new Date().toISOString(),
+        }),
+        IDBExercise.del(data.slug!),
+        firestoreTopic.updateActiveCount(data.topicSlug, "up"),
+        firestoreTopic.updateInactiveCount(data.topicSlug, "down"),
+      ]);
+      router.push(`/review/${data.topicSlug}/${data.slug}`);
     } else {
-      await IDBInactiveExercise.set({
-        ...data,
-        isActive: isActive,
-        updatedAt: new Date().toISOString(),
-      });
-      await IDBExercise.del(data.slug!);
-      await firestoreTopic.updateActiveCount(data.topicSlug, "down");
-      await firestoreTopic.updateInactiveCount(data.topicSlug, "up");
+      await Promise.all([
+        IDBInactiveExercise.set({
+          ...data,
+          isActive: isActive,
+          updatedAt: new Date().toISOString(),
+        }),
+        IDBInactiveExercise.del(data.slug!),
+        firestoreTopic.updateActiveCount(data.topicSlug, "down"),
+        firestoreTopic.updateInactiveCount(data.topicSlug, "up"),
+      ]);
+      router.push(`/e/${data.topicSlug}/${data.slug}`);
     }
-
-    setIsActive(!isActive);
   };
 
   return (
