@@ -8,13 +8,13 @@ export default function ShareButtons({
   return (
     <div className="w-full bg-white py-2 px-4 my-5">
       <h4 className="mb-2 font-sans font-semibold">Share</h4>
-      <div className="flex">
+      <div className="flex gap-5">
         <a
           href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
           target="_blank"
           title="Post on Facebook"
           rel="noopener"
-          className="h-5 w-5 mr-2"
+          className="h-10 w-10"
         >
           <svg
             viewBox="0 0 524 524"
@@ -42,7 +42,7 @@ export default function ShareButtons({
           href={`https://twitter.com/intent/tweet?text=${title} - DevTyp.i.ng&amp;url=${url}&amp;hashtags=`}
           target="_blank"
           title="Post on X (Twitter)"
-          className="h-5 w-5 mr-2 bg-black"
+          className="h-10 w-10 bg-black"
         >
           <svg
             viewBox="0 0 24 24"
@@ -60,7 +60,7 @@ export default function ShareButtons({
           target="_blank"
           title="Post on LinkedIn"
           rel="noopener"
-          className="h-5 w-5 mr-2"
+          className="h-10 w-10"
         >
           <svg
             viewBox="0 0 535 534"
@@ -74,7 +74,7 @@ export default function ShareButtons({
           </svg>
         </a>
         <span
-          className="h-5 w-5 mr-2"
+          className="h-10 w-10"
           title="Copy link"
           onClick={() => {
             navigator.clipboard.writeText(url).then(() => alert("Link copied"));
