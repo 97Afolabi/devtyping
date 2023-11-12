@@ -37,7 +37,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className="flex flex-col h-screen bg-black"
-        style={{ maxWidth: "1440px", margin: "0 auto" }}
+        style={{ maxWidth: "1920px", margin: "0 auto" }}
       >
         <Header />
         <main className="flex-1 mt-10 bg-stone-200">
