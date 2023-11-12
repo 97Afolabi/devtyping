@@ -106,10 +106,13 @@ export default function SampleSelected({
         contributors={contributors}
         sampleSelected={true}
       ></Sidebar>
-      <div className="basis-4/5 md:h-full flex flex-col justify-between bg-slate-100 lg:max-2xl:rounded-r-lg max-lg:rounded-b-lg py-3">
+      <div
+        className="lg:basis-4/5 flex flex-col justify-between bg-slate-100 lg:max-2xl:rounded-r-lg max-lg:rounded-b-lg py-3"
+        style={{ height: "85vh" }}
+      >
         <section
           className="w-full font-mono font-semibold"
-          style={{ maxHeight: "80%" }}
+          style={{ height: "90%" }}
         >
           <section
             className="flex h-8 justify-between py-1 px-4 bg-white"
@@ -120,9 +123,9 @@ export default function SampleSelected({
             <div id="title">{title}</div>
             <Timer isTyping={isTimerRunning}></Timer>
           </section>
-          <pre className="p-2 overflow-scroll max-h-full">
+          <pre className="p-2 max-h-full overflow-scroll">
             <code
-              className="pb-3 text-start select-none text-gray-700"
+              className="pb-10 text-start select-none text-gray-700"
               id="challenge"
               dangerouslySetInnerHTML={{ __html: challengeContent }}
               style={{ whiteSpace: "pre-wrap" }}
@@ -132,6 +135,7 @@ export default function SampleSelected({
         <section
           className="flex justify-center w-full bg-white py-2 px-4"
           style={{
+            height: "10%",
             backgroundColor: indicatorColour,
           }}
         >

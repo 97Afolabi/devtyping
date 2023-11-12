@@ -31,7 +31,10 @@ export default function Sidebar({
   const auth = getAuthUser();
 
   return (
-    <div className="basis-1/5 max-h-screen flex flex-col bg-slate-100 lg:max-2xl:rounded-l-lg max-lg:rounded-t-lg py-3 overflow-y-scroll">
+    <div
+      className="basis-1/5 flex flex-col bg-slate-100 lg:max-2xl:rounded-l-lg max-lg:rounded-t-lg py-3 overflow-y-scroll"
+      style={{ height: "85vh" }}
+    >
       <Link
         href={menuLink}
         className="min-h-8 w-full bg-white py-1 px-4 mb-4 font-sans font-semibold"
