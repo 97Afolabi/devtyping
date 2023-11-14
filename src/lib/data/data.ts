@@ -1,6 +1,6 @@
 import { adjustSpaces } from "../constants/strings";
 import { SampleUnselectedProp } from "../interfaces/Editor";
-import { Exercise } from "../interfaces/Exercise";
+import { Exercise, ExerciseDetails } from "../interfaces/Exercise";
 import { firestoreExercise } from "./firebase/firestore/exercises";
 import { firestoreTopic } from "./firebase/firestore/topics";
 import {
@@ -102,31 +102,35 @@ export const exercise = {
       });
 
       await firestoreTopic.updateInactiveCount(topic, "up");
-    } catch (error) {}
+    } catch (error) {
+      throw new Error("Unable to save exercise");
+    }
   },
+
   async getActive(slug: string): Promise<Exercise> {
     try {
       let exercise: Exercise;
+      let details: ExerciseDetails;
       // check if summary and text exists in indexed db
-      exercise = await IDBExercise.get(slug);
-      if (exercise && exercise.text) {
+      [exercise, details] = await Promise.all([
+        IDBExercise.get(slug),
+        IDBExerciseDetails.get(slug),
+      ]);
+      if (exercise && details) {
+        // append text and contributors
+        exercise.text = details.text;
+        exercise.contributors = details.contributors;
         return exercise;
       }
-      if (exercise && !exercise.text) {
-        const details = await IDBExerciseDetails.get(slug);
-        if (details) {
-          // append text and contributors
-          exercise.text = details.text;
-          exercise.contributors = details.contributors;
-          return exercise;
-        }
-      }
+
       // else  fetch from Firestore
       const data = await firestoreExercise.findById(slug);
       const { summary, detail } = data;
       // update indexed db
-      await IDBExercise.set(summary);
-      await IDBExerciseDetails.set(detail);
+      await Promise.all([
+        IDBExercise.set(summary),
+        IDBExerciseDetails.set(detail),
+      ]);
       return { ...summary, ...detail };
     } catch (error) {
       console.error(error);
@@ -138,26 +142,27 @@ export const exercise = {
   async getInactive(slug: string): Promise<Exercise> {
     try {
       let exercise: Exercise;
+      let details: ExerciseDetails;
       // check if summary and text exists in indexed db
-      exercise = await IDBInactiveExercise.get(slug);
-      if (exercise && exercise.text) {
+      [exercise, details] = await Promise.all([
+        IDBInactiveExercise.get(slug),
+        IDBExerciseDetails.get(slug),
+      ]);
+      if (exercise && details) {
+        // append text and contributors
+        exercise.text = details.text;
+        exercise.contributors = details.contributors;
         return exercise;
       }
-      if (exercise && !exercise.text) {
-        const details = await IDBExerciseDetails.get(slug);
-        if (details) {
-          // append text and contributors
-          exercise.text = details.text;
-          exercise.contributors = details.contributors;
-          return exercise;
-        }
-      }
+
       // else fetch from Firestore
       const data = await firestoreExercise.findById(slug);
       const { summary, detail } = data;
       // update indexed db
-      await IDBInactiveExercise.set(summary);
-      await IDBExerciseDetails.set(detail);
+      await Promise.all([
+        IDBInactiveExercise.set(summary),
+        IDBExerciseDetails.set(detail),
+      ]);
       return { ...summary, ...detail };
     } catch (error) {
       console.error(error);

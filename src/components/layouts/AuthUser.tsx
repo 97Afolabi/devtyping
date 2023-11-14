@@ -31,7 +31,7 @@ function useUserSession(initialUser: any) {
         router.refresh();
       }
     });
-  }, [user]);
+  }, [user, router]);
 
   return user;
 }

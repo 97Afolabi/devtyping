@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import "tailwindcss/tailwind.css";
 import Header from "../components/layouts/Header";

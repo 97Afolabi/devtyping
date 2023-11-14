@@ -45,11 +45,14 @@ export const firestoreExercise = {
       };
       // Filter out fields with undefined values
       const filteredDetails = Object.fromEntries(
+        // eslint-disable-next-line no-unused-vars
         Object.entries(details).filter(([_, value]) => value !== undefined)
       );
 
-      await firestore.save("exercises", summary);
-      await firestore.save("exercise_details", filteredDetails);
+      await Promise.all([
+        firestore.save("exercises", summary),
+        firestore.save("exercise_details", filteredDetails),
+      ]);
     } catch (e) {
       console.error("Error adding document: ", e);
       throw new Error("Error adding document");
@@ -104,14 +107,14 @@ export const firestoreExercise = {
     id: string
   ): Promise<{ summary: ExerciseSummary; detail: SampleSelectedProp }> {
     try {
-      const summary = (await firestore.findById(
-        "exercises",
-        id
-      )) as ExerciseSummary;
-      const detail = (await firestore.findById(
-        "exercise_details",
-        id
-      )) as SampleSelectedProp;
+      const [summary, detail] = await Promise.all([
+        (await firestore.findById("exercises", id)) as ExerciseSummary,
+
+        (await firestore.findById(
+          "exercise_details",
+          id
+        )) as SampleSelectedProp,
+      ]);
       return { summary, detail };
     } catch (e) {
       console.error("Error fetching document: ", e);

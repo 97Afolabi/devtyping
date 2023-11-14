@@ -31,6 +31,7 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
   ) => {
     await firestoreExercise.setStatus(data.slug!, !isActive);
     if (isActive) {
+      // currently active, so deactivate
       await Promise.all([
         IDBExercise.set({
           ...data,
@@ -38,11 +39,11 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
           updatedAt: new Date().toISOString(),
         }),
         IDBExercise.del(data.slug!),
-        firestoreTopic.updateActiveCount(data.topicSlug, "up"),
-        firestoreTopic.updateInactiveCount(data.topicSlug, "down"),
+        firestoreTopic.updateCount(data.topicSlug, "deactivate"),
       ]);
       router.push(`/review/${data.topicSlug}/${data.slug}`);
     } else {
+      // currently inactive, so activate
       await Promise.all([
         IDBInactiveExercise.set({
           ...data,
@@ -50,8 +51,7 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
           updatedAt: new Date().toISOString(),
         }),
         IDBInactiveExercise.del(data.slug!),
-        firestoreTopic.updateActiveCount(data.topicSlug, "down"),
-        firestoreTopic.updateInactiveCount(data.topicSlug, "up"),
+        firestoreTopic.updateCount(data.topicSlug, "activate"),
       ]);
       router.push(`/e/${data.topicSlug}/${data.slug}`);
     }
