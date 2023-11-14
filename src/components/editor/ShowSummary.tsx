@@ -53,7 +53,7 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
         IDBInactiveExercise.del(data.slug!),
         firestoreTopic.updateCount(data.topicSlug, "activate"),
       ]);
-      router.push(`/e/${data.topicSlug}/${data.slug}`);
+      router.push(`/${data.topicSlug}/${data.slug}`);
     }
   };
 

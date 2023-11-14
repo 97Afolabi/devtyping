@@ -7,7 +7,7 @@ export default function ListSamples({
   slug,
 }: {
   data: ExerciseSummary[];
-  prefix: "e" | "review";
+  prefix: "" | "review";
   slug: string;
 }) {
   return (
@@ -17,7 +17,15 @@ export default function ListSamples({
           key={list.slug}
           className="py-1 mb-1 border-b hover:font-semibold hover:bg-white"
         >
-          <Link href={`/${prefix}/${slug}/${list.slug}`}>{list.title}</Link>
+          <Link
+            href={
+              prefix
+                ? `/${prefix}/${slug}/${list.slug}`
+                : `/${slug}/${list.slug}`
+            }
+          >
+            {list.title}
+          </Link>
         </li>
       ))}
     </ul>

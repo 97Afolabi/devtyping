@@ -17,7 +17,7 @@ export default async function Home() {
       <section className="w-full grid md:grid-cols-3 md:content-start py-5 px-2 md:px-10 gap-y-5 gap-x-3">
         {summaries &&
           summaries.map((topic: TopicSummary) => (
-            <SummaryCard prefix="e" data={topic} key={topic.slug}></SummaryCard>
+            <SummaryCard prefix="" data={topic} key={topic.slug}></SummaryCard>
           ))}
       </section>
     </div>

@@ -11,7 +11,7 @@ export default function SampleSelected({
   topicSlug,
   exerciseSlug,
 }: {
-  prefix: "e" | "review";
+  prefix: "" | "review";
   topicSlug: string;
   exerciseSlug: string;
 }) {
