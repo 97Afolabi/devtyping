@@ -47,19 +47,24 @@ export const firestoreTopic = {
     }
   },
 
-  async updateActiveCount(id: string, type: "up" | "down"): Promise<void> {
+  async updateCount(
+    id: string,
+    action: "activate" | "deactivate"
+  ): Promise<void> {
     try {
       const docRef = firestore.getDocRef("topics", id);
-      switch (type) {
-        case "up":
+      switch (action) {
+        case "activate":
           await updateDoc(docRef, {
             countActive: increment(1),
+            countInactive: increment(-1),
             updatedAt: new Date(),
           });
           break;
-        case "down":
+        case "deactivate":
           await updateDoc(docRef, {
             countActive: increment(-1),
+            countInactive: increment(1),
             updatedAt: new Date(),
           });
           break;
