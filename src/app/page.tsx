@@ -14,7 +14,7 @@ export default async function Home() {
   return (
     <div className="mt-6">
       <AnimatedTexts />
-      <section className="w-full grid md:grid-cols-3 md:content-start py-5 px-2 md:px-10 gap-y-5 gap-x-3">
+      <section className="w-full grid md:grid-cols-3 lg:grid-cols-4 md:content-start py-5 px-2 md:px-10 gap-y-5 gap-x-3">
         {summaries &&
           summaries.map((topic: TopicSummary) => (
             <SummaryCard prefix="e" data={topic} key={topic.slug}></SummaryCard>
