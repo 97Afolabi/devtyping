@@ -14,7 +14,7 @@ export default function Sidebar({
   sampleSelected,
 }: {
   data: ExerciseSummary[];
-  prefix: "e" | "review";
+  prefix: "" | "review";
   slug: string;
   contributors: string[];
   sampleSelected: boolean;
@@ -22,10 +22,10 @@ export default function Sidebar({
   let menuLink: string;
   let menuText: string;
   if (sampleSelected) {
-    menuLink = `/${prefix}/${slug}`;
+    menuLink = prefix ? `/${prefix}/${slug}` : `/${slug}`;
     menuText = "Back";
   } else {
-    menuLink = prefix == "e" ? "/" : "/review";
+    menuLink = prefix ? "/review" : "/";
     menuText = "Home";
   }
   const auth = getAuthUser();
@@ -52,7 +52,11 @@ export default function Sidebar({
 
         {sampleSelected && data[0] && (
           <ShareButtons
-            url={`https://devtyp.i.ng/${prefix}/${slug}/${data[0].slug}`}
+            url={
+              prefix
+                ? `https://devtyp.i.ng/${prefix}/${slug}/${data[0].slug}`
+                : `https://devtyp.i.ng/${slug}/${data[0].slug}`
+            }
             title={data[0].title}
           />
         )}

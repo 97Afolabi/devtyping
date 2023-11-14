@@ -8,7 +8,7 @@ export default function SampleUnselected({
   prefix,
   slug,
 }: {
-  prefix: "e" | "review";
+  prefix: "" | "review";
   slug: string;
 }) {
   const [title, setTitle] = useState("");
