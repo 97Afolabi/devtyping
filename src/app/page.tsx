@@ -1,7 +1,13 @@
+import dynamic from "next/dynamic";
 import { TopicSummary } from "../lib/interfaces/TopicSummary";
 import { firestoreTopic } from "../lib/data/firebase/firestore/topics";
 import AnimatedTexts from "../components/homepage/AnimatedTexts";
-import SummaryCard from "../components/homepage/SummaryCard";
+const SummaryCard = dynamic(
+  () => import("../components/homepage/SummaryCard"),
+  {
+    ssr: false,
+  }
+);
 
 export default async function Home() {
   const summaries = await firestoreTopic.findAll();
