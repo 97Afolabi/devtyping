@@ -45,6 +45,7 @@ export const firestoreExercise = {
       };
       // Filter out fields with undefined values
       const filteredDetails = Object.fromEntries(
+        // eslint-disable-next-line no-unused-vars
         Object.entries(details).filter(([_, value]) => value !== undefined)
       );
 

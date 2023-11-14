@@ -12,6 +12,7 @@ export function generateSlug(input: string, length = 50): string {
     // remove special characters
     .replace(/[^\w\s-]/g, "")
     // remove non-ASCII codes
+    // eslint-disable-next-line no-control-regex
     .replace(/[^\x00-\x7F]+/g, "")
     // remove duplicate spaces
     .replace(/[\s]+/g, " ")

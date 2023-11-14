@@ -102,8 +102,11 @@ export const exercise = {
       });
 
       await firestoreTopic.updateInactiveCount(topic, "up");
-    } catch (error) {}
+    } catch (error) {
+      throw new Error("Unable to save exercise");
+    }
   },
+
   async getActive(slug: string): Promise<Exercise> {
     try {
       let exercise: Exercise;

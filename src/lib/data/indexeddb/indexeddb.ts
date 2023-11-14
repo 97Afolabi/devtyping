@@ -12,7 +12,7 @@ if (indexedDbSupported) {
   const dbVersion = 2;
 
   dbPromise = openDB(dbName, dbVersion, {
-    upgrade(db, oldVersion, newVersion) {
+    upgrade(db, oldVersion) {
       if (oldVersion < 1) {
         db.createObjectStore("topics", {
           keyPath: "slug",
