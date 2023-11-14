@@ -56,7 +56,7 @@ export default function SampleUnselected({
         className="lg:basis-4/5 bg-slate-100 lg:max-2xl:rounded-r-lg max-lg:rounded-b-lg py-3"
         style={{ height: "85vh" }}
       >
-        <section className="w-full font-mono font-semibold">
+        <section className="w-full h-full overflow-y-scroll font-mono font-semibold">
           <section className="h-8 bg-white py-1 px-4">
             <div>{title}</div>
           </section>
