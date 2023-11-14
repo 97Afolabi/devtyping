@@ -7,7 +7,7 @@ const AuthUser = dynamic(() => import("./AuthUser"), {
 
 export default function Header() {
   return (
-    <header className="w-full fixed flex flex-col md:flex-row md:justify-between px-12 py-2 h-min bg-slate-900 text-white">
+    <header className="w-full flex flex-col md:flex-row md:justify-between px-12 py-2 h-min bg-slate-900 text-white">
       <div className="text-center">
         <Link
           href="/"
