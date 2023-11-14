@@ -40,7 +40,7 @@ export default function RootLayout({
         style={{ maxWidth: "1920px", margin: "0 auto" }}
       >
         <Header />
-        <main className="flex-1 mt-10 bg-stone-200">
+        <main className="flex-1 bg-stone-200">
           {children}
           {/* TODO: use <Suspense>{children}</Suspense> */}
         </main>
