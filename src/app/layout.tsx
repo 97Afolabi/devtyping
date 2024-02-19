@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "tailwindcss/tailwind.css";
 import Header from "../components/layouts/Header";
 import Footer from "../components/layouts/Footer";
 
-const { TWITTER_CREATOR, TWITTER_SITE, SITE_NAME, BASE_URL } = process.env;
+const {
+  TWITTER_CREATOR,
+  TWITTER_SITE,
+  SITE_NAME,
+  BASE_URL,
+  GOOGLE_ANALYTICS_TAG,
+} = process.env;
 const baseUrl = BASE_URL ? BASE_URL : "https://devtyp.i.ng";
 
 export const metadata: Metadata = {
@@ -45,6 +52,7 @@ export default function RootLayout({
         </main>
         <Footer />
       </body>
+      <GoogleAnalytics gaId={GOOGLE_ANALYTICS_TAG!} />
     </html>
   );
 }
