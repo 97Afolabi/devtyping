@@ -100,7 +100,7 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
         <p>
           <button
             type="button"
-            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-1 px-2 rounded-sm focus:outline-hidden focus:shadow-outline"
             onClick={() => handleStatusUpdate(data, isActive)}
           >
             {isActive ? "Deactivate" : "Activate"}
