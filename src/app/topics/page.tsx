@@ -80,7 +80,7 @@ const Topics = () => {
             name="topic"
             value={topic}
             onChange={handleTopicUpdate}
-            className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
             placeholder="Enter topic"
             required={true}
           />
@@ -97,7 +97,7 @@ const Topics = () => {
             name="summary"
             value={summary}
             onChange={handleSummaryUpdate}
-            className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
             placeholder="Enter summary"
             rows={5}
             required={true}
@@ -115,7 +115,7 @@ const Topics = () => {
             name="description"
             value={description}
             onChange={handleDescriptionUpdate}
-            className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
             placeholder="Enter description"
             rows={10}
             required={true}
@@ -125,7 +125,7 @@ const Topics = () => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-2 px-4 rounded-sm focus:outline-hidden focus:shadow-outline"
           >
             Submit
           </button>

@@ -86,7 +86,7 @@ const Contribute = () => {
               name="title"
               value={title}
               onChange={handleTitleUpdate}
-              className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
               placeholder="Enter title"
               required={true}
             />
@@ -104,7 +104,7 @@ const Contribute = () => {
               name="topic"
               value={topic}
               onChange={handleTopicUpdate}
-              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
+              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-sm leading-tight focus:outline-hidden focus:shadow-outline"
             >
               <option>Choose</option>
               {topicSummaries &&
@@ -129,7 +129,7 @@ const Contribute = () => {
             name="text"
             value={text}
             onChange={handleTextUpdate}
-            className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
             placeholder="Paste sample"
             rows={20}
             required={true}
@@ -139,7 +139,7 @@ const Contribute = () => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-2 px-4 rounded-sm focus:outline-hidden focus:shadow-outline"
           >
             Submit
           </button>
