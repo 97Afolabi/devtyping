@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import "../../app/globals.css";
+import "../../styles/globals.css";
 
 const sentences = [
   "Learn something new",
