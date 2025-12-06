@@ -5,7 +5,7 @@ import SampleUnselected from "../../components/editor/SampleUnselected";
 export default async function Editor({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string[] }>;
 }) {
   const { slug } = await params;
   const [topicSlug, exerciseSlug] = [slug[0], slug[1]];
