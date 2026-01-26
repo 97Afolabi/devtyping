@@ -1,6 +1,10 @@
-const path = require("path");
-module.exports = {
-  turbopack: {
-    root: path.join(__dirname, ".."),
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Use webpack as the bundler instead of Turbopack
+  transpilePackages: ["next"],
+  webpack: (config, { isServer }) => {
+    return config;
   },
 };
+
+module.exports = nextConfig;

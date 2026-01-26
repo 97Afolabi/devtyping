@@ -33,16 +33,12 @@ if (indexedDbSupported) {
           "inactive_exercises",
           {
             keyPath: "slug",
-          }
+          },
         );
         inactiveExercisesStore.createIndex("topicSlug", "topicSlug");
       }
     },
   });
-  // } else {
-  //   // TODO: handle browsers without IndexedDB support
-  //   console.error("IndexedDB not supported");
-  //   throw new Error("IndexedDB not supported");
 }
 
 export const deleteIDB = async () => {
@@ -156,7 +152,7 @@ export const IDBTopic = {
   async getInactiveExerciseSummary(key: string): Promise<ExerciseSummary[]> {
     const exercises = await indexedDB.getFromIndex(
       "inactive_exercises",
-      "topicSlug"
+      "topicSlug",
     );
     return exercises.filter((exercise) => exercise.topicSlug == key);
   },
