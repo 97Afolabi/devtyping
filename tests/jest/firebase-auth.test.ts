@@ -12,10 +12,12 @@ jest.mock("../../src/lib/data/firebase/firestore/users", () => ({
 
 describe("server firebase auth", () => {
   const originalApiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+  let fetchMock: jest.Mock;
 
   beforeEach(() => {
     process.env.NEXT_PUBLIC_FIREBASE_API_KEY = "test-api-key";
-    (global as { fetch: jest.Mock }).fetch = jest.fn();
+    fetchMock = jest.fn();
+    global.fetch = fetchMock as unknown as typeof fetch;
     jest.clearAllMocks();
   });
 
@@ -56,7 +58,7 @@ describe("server firebase auth", () => {
   });
 
   it("throws for invalid token lookup response", async () => {
-    (global as { fetch: jest.Mock }).fetch.mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: false,
     });
 
@@ -72,7 +74,7 @@ describe("server firebase auth", () => {
   });
 
   it("returns authenticated user payload when token and firestore lookup succeed", async () => {
-    (global as { fetch: jest.Mock }).fetch.mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({
         users: [{ localId: "uid-1" }],
@@ -102,7 +104,7 @@ describe("server firebase auth", () => {
   });
 
   it("throws forbidden when authenticated user is not admin", async () => {
-    (global as { fetch: jest.Mock }).fetch.mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({
         users: [{ localId: "uid-1" }],
@@ -128,7 +130,7 @@ describe("server firebase auth", () => {
   });
 
   it("returns admin user when permissions check passes", async () => {
-    (global as { fetch: jest.Mock }).fetch.mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({
         users: [{ localId: "uid-1" }],
