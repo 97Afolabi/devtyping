@@ -8,10 +8,11 @@ interface UpdateExerciseStatusRequestBody {
   topicSlug?: string;
 }
 
-export async function POST(
-  request: Request,
-  context: { params: Promise<{ slug: string }> },
-) {
+type StatusRouteContext = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function POST(request: Request, context: StatusRouteContext) {
   try {
     await requireAdminUser(request);
 

@@ -12,6 +12,7 @@ jest.mock("../../src/lib/data/firebase/firestore/users", () => ({
 
 describe("server firebase auth", () => {
   const originalApiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+  const originalFetch = global.fetch;
   let fetchMock: jest.Mock;
 
   beforeEach(() => {
@@ -23,6 +24,7 @@ describe("server firebase auth", () => {
 
   afterAll(() => {
     process.env.NEXT_PUBLIC_FIREBASE_API_KEY = originalApiKey;
+    global.fetch = originalFetch;
   });
 
   it("throws when authorization header is missing", async () => {
@@ -82,7 +84,7 @@ describe("server firebase auth", () => {
     });
 
     (firestoreUser.findById as jest.Mock).mockResolvedValue({
-      id: "uid-1",
+      slug: "uid-1",
       username: "sam",
       isActive: true,
       isAdmin: false,
@@ -112,7 +114,7 @@ describe("server firebase auth", () => {
     });
 
     (firestoreUser.findById as jest.Mock).mockResolvedValue({
-      id: "uid-1",
+      slug: "uid-1",
       username: "sam",
       isActive: true,
       isAdmin: false,
@@ -138,7 +140,7 @@ describe("server firebase auth", () => {
     });
 
     (firestoreUser.findById as jest.Mock).mockResolvedValue({
-      id: "uid-1",
+      slug: "uid-1",
       username: "admin",
       isActive: true,
       isAdmin: true,

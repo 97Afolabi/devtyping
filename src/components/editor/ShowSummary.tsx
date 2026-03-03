@@ -57,7 +57,7 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
       if (isActive) {
         // currently active, so deactivate
         await Promise.all([
-          IDBExercise.set({
+          IDBInactiveExercise.set({
             ...data,
             isActive: false,
             updatedAt: new Date().toISOString(),
@@ -68,7 +68,7 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
       } else {
         // currently inactive, so activate
         await Promise.all([
-          IDBInactiveExercise.set({
+          IDBExercise.set({
             ...data,
             isActive: true,
             updatedAt: new Date().toISOString(),

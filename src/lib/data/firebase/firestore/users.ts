@@ -1,7 +1,7 @@
 import { firestore } from "./firestore";
 
 export interface User {
-  id: string;
+  slug: string;
   username: string;
   isActive: boolean;
   isAdmin: boolean;
