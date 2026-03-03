@@ -79,11 +79,11 @@ export const IDBExercise = {
   },
 
   async saveMany(exercises: ExerciseSummary[]) {
-    {
-      exercises.forEach(async (exercise) => {
+    await Promise.all(
+      exercises.map(async (exercise) => {
         await indexedDB.set("exercises", exercise);
-      });
-    }
+      }),
+    );
   },
 
   async get(key: string) {
@@ -105,11 +105,11 @@ export const IDBInactiveExercise = {
   },
 
   async saveMany(exercises: ExerciseSummary[]) {
-    {
-      exercises.forEach(async (exercise) => {
+    await Promise.all(
+      exercises.map(async (exercise) => {
         await indexedDB.set("inactive_exercises", exercise);
-      });
-    }
+      }),
+    );
   },
 
   async get(key: string) {
