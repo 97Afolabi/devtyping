@@ -17,7 +17,7 @@ export const firestoreTopic = {
 
   async findAll(): Promise<TopicSummary[]> {
     try {
-      return (await firestore.find("topics")) as TopicSummary[];
+      return await firestore.find<TopicSummary>("topics");
     } catch (e) {
       console.error("Error fetching documents: ", e);
       throw new Error("Error fetching documents");
@@ -26,11 +26,11 @@ export const firestoreTopic = {
 
   async findAllInActive(): Promise<TopicSummary[]> {
     try {
-      const data = (await firestore.findWhere("topics", {
+      const data = await firestore.findWhere<TopicSummary>("topics", {
         field: "isActive",
         operator: "==",
         value: false,
-      })) as TopicSummary[];
+      });
       return data;
     } catch (e) {
       console.error("Error fetching documents: ", e);
@@ -40,7 +40,7 @@ export const firestoreTopic = {
 
   async findById(id: string): Promise<TopicSummary> {
     try {
-      return (await firestore.findById("topics", id)) as TopicSummary;
+      return await firestore.findById<TopicSummary>("topics", id);
     } catch (e) {
       console.error("Error fetching document: ", e);
       throw new Error("Error fetching document");
@@ -49,7 +49,7 @@ export const firestoreTopic = {
 
   async updateCount(
     id: string,
-    action: "activate" | "deactivate"
+    action: "activate" | "deactivate",
   ): Promise<void> {
     try {
       const docRef = firestore.getDocRef("topics", id);
