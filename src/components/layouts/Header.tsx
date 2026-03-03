@@ -1,10 +1,6 @@
 "use client";
-import dynamic from "next/dynamic";
 import Link from "next/link";
-
-const AuthUser = dynamic(() => import("./AuthUser"), {
-  ssr: false,
-});
+import AuthUser from "./AuthUser";
 
 export default function Header() {
   return (

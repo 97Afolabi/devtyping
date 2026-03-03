@@ -1,10 +1,6 @@
 "use client";
-import dynamic from "next/dynamic";
 import { TopicSummary } from "../../lib/interfaces/TopicSummary";
-
-const SummaryCard = dynamic(() => import("./SummaryCard"), {
-  ssr: false,
-});
+import SummaryCard from "./SummaryCard";
 
 export default function ReviewCardsList({
   summaries,
