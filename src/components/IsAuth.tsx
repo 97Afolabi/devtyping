@@ -1,16 +1,18 @@
 "use client";
 import { useEffect } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { getAuthUser } from "../lib/data/auth";
 
 function isAuth(Component: any) {
   return function IsAuth(props: any) {
+    const router = useRouter();
+
     useEffect(() => {
       const auth = getAuthUser();
       if (!auth || !auth.username) {
-        return redirect("/");
+        router.replace("/");
       }
-    }, []);
+    }, [router]);
 
     return <Component {...props} />;
   };
@@ -18,12 +20,14 @@ function isAuth(Component: any) {
 
 function isAdmin(Component: any) {
   return function IsAuth(props: any) {
+    const router = useRouter();
+
     useEffect(() => {
       const auth = getAuthUser();
       if (!auth || !auth.isAdmin) {
-        return redirect("/");
+        router.replace("/");
       }
-    }, []);
+    }, [router]);
 
     return <Component {...props} />;
   };
