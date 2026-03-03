@@ -1166,7 +1166,7 @@
     natural-compare "^1.4.0"
     ts-api-utils "^2.4.0"
 
-"@typescript-eslint/parser@8.56.1":
+"@typescript-eslint/parser@8.56.1", "@typescript-eslint/parser@^8.56.1":
   version "8.56.1"
   resolved "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-8.56.1.tgz#21d13b3d456ffb08614c1d68bb9a4f8d9237cdc7"
   integrity sha512-klQbnPAAiGYFyI02+znpBRLyjL4/BrBd0nyWkdC0s/6xFLkXYQ8OoRrSkqacS1ddVxf/LDyODIKbQ5TgKAf/Fg==
