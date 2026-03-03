@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ExerciseSummary } from "../../lib/interfaces/Exercise";
-import { firestoreExercise } from "../../lib/data/firebase/firestore/exercises";
 import {
   IDBExercise,
   IDBInactiveExercise,
 } from "../../lib/data/indexeddb/indexeddb";
-import { firestoreTopic } from "../../lib/data/firebase/firestore/topics";
 import { getAuthUser } from "../../lib/data/auth";
+import { postWithAuth } from "../../lib/data/firebase/auth/request";
 
 export default function ShowSummary({ data }: { data: ExerciseSummary }) {
   const [isActive, setIsActive] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [statusUpdateError, setStatusUpdateError] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -27,33 +28,59 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
 
   const handleStatusUpdate = async (
     data: ExerciseSummary,
-    isActive: boolean
+    isActive: boolean,
   ) => {
-    await firestoreExercise.setStatus(data.slug!, !isActive);
-    if (isActive) {
-      // currently active, so deactivate
-      await Promise.all([
-        IDBExercise.set({
-          ...data,
-          isActive: isActive,
-          updatedAt: new Date().toISOString(),
-        }),
-        IDBExercise.del(data.slug!),
-        firestoreTopic.updateCount(data.topicSlug, "deactivate"),
-      ]);
-      router.push(`/review/${data.topicSlug}/${data.slug}`);
-    } else {
-      // currently inactive, so activate
-      await Promise.all([
-        IDBInactiveExercise.set({
-          ...data,
-          isActive: isActive,
-          updatedAt: new Date().toISOString(),
-        }),
-        IDBInactiveExercise.del(data.slug!),
-        firestoreTopic.updateCount(data.topicSlug, "activate"),
-      ]);
-      router.push(`/${data.topicSlug}/${data.slug}`);
+    if (isUpdatingStatus) {
+      return;
+    }
+
+    setIsUpdatingStatus(true);
+    setStatusUpdateError("");
+
+    try {
+      const response = await postWithAuth(
+        `/api/exercises/${data.slug}/status`,
+        {
+          isActive,
+          topicSlug: data.topicSlug,
+        },
+      );
+
+      if (!response.ok) {
+        const result = (await response.json()) as { error?: string };
+        setStatusUpdateError(
+          result.error ?? "Unable to update exercise status",
+        );
+        return;
+      }
+
+      if (isActive) {
+        // currently active, so deactivate
+        await Promise.all([
+          IDBExercise.set({
+            ...data,
+            isActive: false,
+            updatedAt: new Date().toISOString(),
+          }),
+          IDBExercise.del(data.slug!),
+        ]);
+        router.push(`/review/${data.topicSlug}/${data.slug}`);
+      } else {
+        // currently inactive, so activate
+        await Promise.all([
+          IDBInactiveExercise.set({
+            ...data,
+            isActive: true,
+            updatedAt: new Date().toISOString(),
+          }),
+          IDBInactiveExercise.del(data.slug!),
+        ]);
+        router.push(`/${data.topicSlug}/${data.slug}`);
+      }
+    } catch {
+      setStatusUpdateError("Unable to update exercise status");
+    } finally {
+      setIsUpdatingStatus(false);
     }
   };
 
@@ -100,12 +127,22 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
         <p>
           <button
             type="button"
-            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-1 px-2 rounded-sm focus:outline-hidden focus:shadow-outline"
+            className="bg-slate-600 hover:bg-slate-900 disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-bold py-1 px-2 rounded-sm focus:outline-hidden focus:shadow-outline"
             onClick={() => handleStatusUpdate(data, isActive)}
+            disabled={isUpdatingStatus}
+            aria-disabled={isUpdatingStatus}
+            aria-busy={isUpdatingStatus}
           >
-            {isActive ? "Deactivate" : "Activate"}
+            {isUpdatingStatus
+              ? "Updating..."
+              : isActive
+                ? "Deactivate"
+                : "Activate"}
           </button>
         </p>
+      )}
+      {statusUpdateError && (
+        <p className="text-sm text-red-600">{statusUpdateError}</p>
       )}
       <p>
         Date: {data.createdAt?.toLocaleDateString()}{" "}
