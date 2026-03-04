@@ -2,29 +2,25 @@ import {
   requireAdminUser,
   requireAuthenticatedUser,
 } from "../../src/lib/server/firebase-auth";
-import { firestoreUser } from "../../src/lib/data/firebase/firestore/users";
+import { adminAuth, adminDb } from "../../src/lib/server/firebase-admin";
 
-jest.mock("../../src/lib/data/firebase/firestore/users", () => ({
-  firestoreUser: {
-    findById: jest.fn(),
+jest.mock("../../src/lib/server/firebase-admin", () => ({
+  adminAuth: {
+    verifyIdToken: jest.fn(),
+  },
+  adminDb: {
+    collection: jest.fn(),
   },
 }));
 
 describe("server firebase auth", () => {
-  const originalApiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-  const originalFetch = global.fetch;
-  let fetchMock: jest.Mock;
+  const mockDocGet = jest.fn();
+  const mockDoc = jest.fn(() => ({ get: mockDocGet }));
+  const mockCollection = jest.fn(() => ({ doc: mockDoc }));
 
   beforeEach(() => {
-    process.env.NEXT_PUBLIC_FIREBASE_API_KEY = "test-api-key";
-    fetchMock = jest.fn();
-    global.fetch = fetchMock as unknown as typeof fetch;
+    (adminDb.collection as jest.Mock).mockImplementation(mockCollection);
     jest.clearAllMocks();
-  });
-
-  afterAll(() => {
-    process.env.NEXT_PUBLIC_FIREBASE_API_KEY = originalApiKey;
-    global.fetch = originalFetch;
   });
 
   it("throws when authorization header is missing", async () => {
@@ -46,7 +42,9 @@ describe("server firebase auth", () => {
   });
 
   it("throws when firebase api key is missing", async () => {
-    delete process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+    (adminAuth.verifyIdToken as jest.Mock).mockRejectedValue(
+      new Error("invalid token"),
+    );
 
     const request = new Request("http://localhost", {
       headers: {
@@ -55,14 +53,14 @@ describe("server firebase auth", () => {
     });
 
     await expect(requireAuthenticatedUser(request)).rejects.toThrow(
-      "Missing Firebase API key configuration",
+      "Invalid authentication token",
     );
   });
 
   it("throws for invalid token lookup response", async () => {
-    fetchMock.mockResolvedValue({
-      ok: false,
-    });
+    (adminAuth.verifyIdToken as jest.Mock).mockRejectedValue(
+      new Error("invalid token"),
+    );
 
     const request = new Request("http://localhost", {
       headers: {
@@ -76,20 +74,17 @@ describe("server firebase auth", () => {
   });
 
   it("returns authenticated user payload when token and firestore lookup succeed", async () => {
-    fetchMock.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        users: [{ localId: "uid-1" }],
+    (adminAuth.verifyIdToken as jest.Mock).mockResolvedValue({ uid: "uid-1" });
+    mockDocGet.mockResolvedValue({
+      exists: true,
+      data: () => ({
+        slug: "uid-1",
+        username: "sam",
+        isActive: true,
+        isAdmin: false,
+        createdAt: new Date("2024-01-01"),
+        updatedAt: new Date("2024-01-01"),
       }),
-    });
-
-    (firestoreUser.findById as jest.Mock).mockResolvedValue({
-      slug: "uid-1",
-      username: "sam",
-      isActive: true,
-      isAdmin: false,
-      createdAt: new Date("2024-01-01"),
-      updatedAt: new Date("2024-01-01"),
     });
 
     const request = new Request("http://localhost", {
@@ -106,20 +101,17 @@ describe("server firebase auth", () => {
   });
 
   it("throws forbidden when authenticated user is not admin", async () => {
-    fetchMock.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        users: [{ localId: "uid-1" }],
+    (adminAuth.verifyIdToken as jest.Mock).mockResolvedValue({ uid: "uid-1" });
+    mockDocGet.mockResolvedValue({
+      exists: true,
+      data: () => ({
+        slug: "uid-1",
+        username: "sam",
+        isActive: true,
+        isAdmin: false,
+        createdAt: new Date("2024-01-01"),
+        updatedAt: new Date("2024-01-01"),
       }),
-    });
-
-    (firestoreUser.findById as jest.Mock).mockResolvedValue({
-      slug: "uid-1",
-      username: "sam",
-      isActive: true,
-      isAdmin: false,
-      createdAt: new Date("2024-01-01"),
-      updatedAt: new Date("2024-01-01"),
     });
 
     const request = new Request("http://localhost", {
@@ -132,20 +124,17 @@ describe("server firebase auth", () => {
   });
 
   it("returns admin user when permissions check passes", async () => {
-    fetchMock.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        users: [{ localId: "uid-1" }],
+    (adminAuth.verifyIdToken as jest.Mock).mockResolvedValue({ uid: "uid-1" });
+    mockDocGet.mockResolvedValue({
+      exists: true,
+      data: () => ({
+        slug: "uid-1",
+        username: "admin",
+        isActive: true,
+        isAdmin: true,
+        createdAt: new Date("2024-01-01"),
+        updatedAt: new Date("2024-01-01"),
       }),
-    });
-
-    (firestoreUser.findById as jest.Mock).mockResolvedValue({
-      slug: "uid-1",
-      username: "admin",
-      isActive: true,
-      isAdmin: true,
-      createdAt: new Date("2024-01-01"),
-      updatedAt: new Date("2024-01-01"),
     });
 
     const request = new Request("http://localhost", {
@@ -159,5 +148,22 @@ describe("server firebase auth", () => {
       username: "admin",
       isAdmin: true,
     });
+  });
+
+  it("throws when user document does not exist", async () => {
+    (adminAuth.verifyIdToken as jest.Mock).mockResolvedValue({ uid: "uid-1" });
+    mockDocGet.mockResolvedValue({
+      exists: false,
+    });
+
+    const request = new Request("http://localhost", {
+      headers: {
+        authorization: "Bearer token",
+      },
+    });
+
+    await expect(requireAuthenticatedUser(request)).rejects.toThrow(
+      "Unable to resolve authenticated user",
+    );
   });
 });

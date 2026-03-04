@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { firestoreTopic } from "../../../lib/data/firebase/firestore/topics";
 import { requireAdminUser } from "../../../lib/server/firebase-auth";
+import { createTopic } from "../../../lib/server/firestore-admin";
 
 interface CreateTopicRequestBody {
   title?: string;
@@ -21,13 +21,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Topic is required" }, { status: 400 });
     }
 
-    await firestoreTopic.save({
+    await createTopic({
       title,
       summary: summary ?? "",
       description: description ?? "",
-      countActive: 0,
-      countInactive: 0,
-      isActive: true,
     });
 
     return NextResponse.json({ ok: true });

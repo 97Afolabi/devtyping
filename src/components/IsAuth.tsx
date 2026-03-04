@@ -6,13 +6,18 @@ import { getAuthUser } from "../lib/data/auth";
 function isAuth(Component: any) {
   return function IsAuth(props: any) {
     const router = useRouter();
+    const auth = getAuthUser();
+    const unauthorized = !auth || !auth.username;
 
     useEffect(() => {
-      const auth = getAuthUser();
-      if (!auth || !auth.username) {
+      if (unauthorized) {
         router.replace("/");
       }
-    }, [router]);
+    }, [router, unauthorized]);
+
+    if (unauthorized) {
+      return null;
+    }
 
     return <Component {...props} />;
   };
@@ -21,13 +26,18 @@ function isAuth(Component: any) {
 function isAdmin(Component: any) {
   return function IsAuth(props: any) {
     const router = useRouter();
+    const auth = getAuthUser();
+    const unauthorized = !auth || !auth.isAdmin;
 
     useEffect(() => {
-      const auth = getAuthUser();
-      if (!auth || !auth.isAdmin) {
+      if (unauthorized) {
         router.replace("/");
       }
-    }, [router]);
+    }, [router, unauthorized]);
+
+    if (unauthorized) {
+      return null;
+    }
 
     return <Component {...props} />;
   };

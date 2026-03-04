@@ -10,8 +10,12 @@ export const firestoreTopic = {
       const slug = generateSlug(data.title);
       const topic = { slug, ...data };
       await firestore.save("topics", topic);
-    } catch (e) {
-      console.error("Error adding document: ", e);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Error adding document");
     }
   },
 

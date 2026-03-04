@@ -1,10 +1,5 @@
-import { firestoreUser, User } from "../data/firebase/firestore/users";
-
-interface FirebaseLookupResponse {
-  users?: Array<{
-    localId: string;
-  }>;
-}
+import { User } from "../data/firebase/firestore/users";
+import { adminAuth, adminDb } from "./firebase-admin";
 
 export interface AuthenticatedUser extends User {
   uid: string;
@@ -25,34 +20,12 @@ function getBearerToken(request: Request): string {
 }
 
 async function getUidFromIdToken(idToken: string): Promise<string> {
-  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-  if (!apiKey) {
-    throw new Error("Missing Firebase API key configuration");
-  }
-
-  const response = await fetch(
-    `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ idToken }),
-      cache: "no-store",
-    },
-  );
-
-  if (!response.ok) {
+  try {
+    const decodedToken = await adminAuth.verifyIdToken(idToken);
+    return decodedToken.uid;
+  } catch {
     throw new Error("Invalid authentication token");
   }
-
-  const payload = (await response.json()) as FirebaseLookupResponse;
-  const uid = payload.users?.[0]?.localId;
-  if (!uid) {
-    throw new Error("Unable to resolve authenticated user");
-  }
-
-  return uid;
 }
 
 export async function requireAuthenticatedUser(
@@ -60,7 +33,13 @@ export async function requireAuthenticatedUser(
 ): Promise<AuthenticatedUser> {
   const idToken = getBearerToken(request);
   const uid = await getUidFromIdToken(idToken);
-  const user = await firestoreUser.findById(uid);
+
+  const userSnap = await adminDb.collection("users").doc(uid).get();
+  if (!userSnap.exists) {
+    throw new Error("Unable to resolve authenticated user");
+  }
+
+  const user = userSnap.data() as User;
   return {
     ...user,
     uid,

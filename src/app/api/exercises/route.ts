@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { exercise } from "../../../lib/data/data";
 import { requireAuthenticatedUser } from "../../../lib/server/firebase-auth";
+import { createExercise } from "../../../lib/server/firestore-admin";
 
 interface CreateExerciseRequestBody {
   title?: string;
@@ -24,9 +24,9 @@ export async function POST(request: Request) {
       );
     }
 
-    await exercise.save({
+    await createExercise({
       title,
-      topic,
+      topicSlug: topic,
       text,
       author: user.username,
     });

@@ -39,11 +39,11 @@ export const firestore = {
     collName: string,
     data: T,
   ): Promise<void> {
-    try {
-      if (!data.slug) {
-        throw new Error("Missing slug field");
-      }
+    if (!data.slug) {
+      throw new Error("Missing slug field");
+    }
 
+    try {
       const now = new Date();
       const payload = {
         ...data,
@@ -53,8 +53,11 @@ export const firestore = {
 
       const collectionRef = collection(db, collName);
       await setDoc(doc(collectionRef, data.slug), payload, { merge: true });
-    } catch (e) {
-      console.error("Error adding document: ", e);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      if (error instanceof Error) {
+        throw error;
+      }
       throw new Error("Error adding document");
     }
   },
@@ -83,8 +86,11 @@ export const firestore = {
       } else {
         throw new Error("Document not found");
       }
-    } catch (e) {
-      console.error("Error fetching document: ", e);
+    } catch (error) {
+      console.error("Error fetching document: ", error);
+      if (error instanceof Error && error.message === "Document not found") {
+        throw error;
+      }
       throw new Error("Error fetching document");
     }
   },

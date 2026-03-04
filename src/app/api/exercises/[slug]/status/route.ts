@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server";
-import { firestoreExercise } from "../../../../../lib/data/firebase/firestore/exercises";
-import { firestoreTopic } from "../../../../../lib/data/firebase/firestore/topics";
 import { requireAdminUser } from "../../../../../lib/server/firebase-auth";
-
-interface UpdateExerciseStatusRequestBody {
-  isActive?: boolean;
-  topicSlug?: string;
-}
+import { toggleExerciseStatus } from "../../../../../lib/server/firestore-admin";
 
 type StatusRouteContext = {
   params: Promise<{ slug: string }>;
@@ -17,24 +11,10 @@ export async function POST(request: Request, context: StatusRouteContext) {
     await requireAdminUser(request);
 
     const { slug } = await context.params;
-    const body = (await request.json()) as UpdateExerciseStatusRequestBody;
 
-    if (typeof body.isActive !== "boolean" || !body.topicSlug) {
-      return NextResponse.json(
-        { error: "isActive and topicSlug are required" },
-        { status: 400 },
-      );
-    }
+    const { isActive } = await toggleExerciseStatus(slug);
 
-    const nextActiveState = !body.isActive;
-    await firestoreExercise.setStatus(slug, nextActiveState);
-
-    await firestoreTopic.updateCount(
-      body.topicSlug,
-      body.isActive ? "deactivate" : "activate",
-    );
-
-    return NextResponse.json({ ok: true, isActive: nextActiveState });
+    return NextResponse.json({ ok: true, isActive });
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unable to update status";
