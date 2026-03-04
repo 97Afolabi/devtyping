@@ -1,13 +1,21 @@
 "use client";
-import { redirect, useParams } from "next/navigation";
+import { useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import SampleSelected from "../../../components/editor/SampleSelected";
 import SampleUnselected from "../../../components/editor/SampleUnselected";
 import { isAuth } from "../../../components/IsAuth";
 
 function Editor() {
   const params = useParams();
+  const router = useRouter();
   const slug = Array.isArray(params.slug) ? params.slug : [params.slug];
   const [topicSlug, exerciseSlug] = [slug[0]!, slug[1]!];
+
+  useEffect(() => {
+    if (slug.length > 2) {
+      router.replace("/");
+    }
+  }, [router, slug.length]);
 
   switch (slug.length) {
     case 1:
@@ -27,7 +35,7 @@ function Editor() {
         </section>
       );
     default:
-      redirect("/");
+      return null;
   }
 }
 

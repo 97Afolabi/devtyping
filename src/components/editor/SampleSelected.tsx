@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { replaceHTMLChar } from "../../lib/constants/strings";
 import { ExerciseSummary } from "../../lib/interfaces/Exercise";
 import { exercise } from "../../lib/data/data";
 import Sidebar from "./Sidebar";
@@ -20,7 +19,6 @@ export default function SampleSelected({
   const [data, setData] = useState<ExerciseSummary[]>([]);
   const [buttonText, setCopyButtonText] = useState("Copy");
   const [indicatorColour, setIndicatorColour] = useState("rgba(255, 255, 255)");
-  const [challengeContent, setChallengeContent] = useState("");
 
   const [textInput, setTextInput] = useState("");
   const [title, setTitle] = useState("");
@@ -39,7 +37,6 @@ export default function SampleSelected({
       setData([summary]);
       setTitle(data.title);
       setTextInput(data.text);
-      setChallengeContent(replaceHTMLChar(data.text));
       if (data.contributors) {
         setContributors(data.contributors);
       }
@@ -81,20 +78,33 @@ export default function SampleSelected({
       setTimerRunning(false);
     }
 
-    if (inputPos < textInput.length) {
-      update(textInput, inputPos);
-    }
+    return;
   };
 
-  const update = (textInput: string, inputPos: number) => {
-    const beforeInput = replaceHTMLChar(textInput.slice(0, inputPos));
-    const afterInput = replaceHTMLChar(textInput.slice(inputPos + 1));
+  const renderChallengeText = () => {
+    if (!textInput) {
+      return null;
+    }
 
-    const updatedContent = `${beforeInput}<strong style="border-bottom: 3px double red; font-size: 18px;">${replaceHTMLChar(
-      textInput[inputPos]
-    )}</strong>${afterInput}`;
+    const inputPos = inputValue.length;
 
-    setChallengeContent(updatedContent);
+    if (inputPos >= textInput.length) {
+      return textInput;
+    }
+
+    const beforeInput = textInput.slice(0, inputPos);
+    const currentInput = textInput[inputPos];
+    const afterInput = textInput.slice(inputPos + 1);
+
+    return (
+      <>
+        {beforeInput}
+        <strong style={{ borderBottom: "3px double red", fontSize: "18px" }}>
+          {currentInput}
+        </strong>
+        {afterInput}
+      </>
+    );
   };
 
   return (
@@ -127,9 +137,10 @@ export default function SampleSelected({
             <code
               className="pb-10 text-start select-none text-gray-700"
               id="challenge"
-              dangerouslySetInnerHTML={{ __html: challengeContent }}
               style={{ whiteSpace: "pre-wrap" }}
-            ></code>
+            >
+              {renderChallengeText()}
+            </code>
           </pre>
         </section>
         <section

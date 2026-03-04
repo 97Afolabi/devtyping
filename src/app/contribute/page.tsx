@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { getAuthUser } from "../../lib/data/auth";
 import { firestoreTopic } from "../../lib/data/firebase/firestore/topics";
-import { exercise } from "../../lib/data/data";
+import { postWithAuth } from "../../lib/data/firebase/auth/request";
 import { TopicSummary } from "../../lib/interfaces/TopicSummary";
 import SuccessMessage from "../../components/editor/SuccessMessage";
 import ValidationError from "../../components/editor/ValidationError";
@@ -38,7 +38,7 @@ const Contribute = () => {
   };
 
   const handleFormSubmission = async (
-    e: React.ChangeEvent<HTMLFormElement>
+    e: React.ChangeEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
 
@@ -56,7 +56,17 @@ const Contribute = () => {
       return null;
     }
 
-    await exercise.save({ title, topic, text, author: author!.username });
+    const response = await postWithAuth("/api/exercises", {
+      title,
+      topic,
+      text,
+    });
+
+    if (!response.ok) {
+      const data = (await response.json()) as { error?: string };
+      setErrors([data.error ?? "Unable to save exercise"]);
+      return;
+    }
 
     setSuccess([
       "Thank you for contributing!",

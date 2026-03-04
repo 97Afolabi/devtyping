@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { getAuthUser } from "../../lib/data/auth";
-import { firestoreTopic } from "../../lib/data/firebase/firestore/topics";
+import { postWithAuth } from "../../lib/data/firebase/auth/request";
 import SuccessMessage from "../../components/editor/SuccessMessage";
 import ValidationError from "../../components/editor/ValidationError";
 import { isAdmin } from "../../components/IsAuth";
@@ -22,13 +22,13 @@ const Topics = () => {
   };
 
   const handleDescriptionUpdate = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setDescription(e.target.value);
   };
 
   const handleFormSubmission = async (
-    e: React.ChangeEvent<HTMLFormElement>
+    e: React.ChangeEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
 
@@ -46,14 +46,17 @@ const Topics = () => {
       return null;
     }
 
-    await firestoreTopic.save({
+    const response = await postWithAuth("/api/topics", {
       title: topic,
       summary,
       description,
-      countActive: 0,
-      countInactive: 0,
-      isActive: true,
     });
+
+    if (!response.ok) {
+      const data = (await response.json()) as { error?: string };
+      setErrors([data.error ?? "Unable to add topic"]);
+      return;
+    }
 
     setSuccess(["Topic added successfully"]);
     setTopic("");

@@ -9,6 +9,7 @@ import {
   query,
   WhereFilterOp,
   DocumentReference,
+  DocumentData,
   QueryConstraint,
 } from "firebase/firestore";
 import { firebaseApp } from "../firebase";
@@ -16,31 +17,59 @@ import { firebaseApp } from "../firebase";
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(firebaseApp);
 
+function normalizeTimestampFields<T>(data: DocumentData): T {
+  const normalizedData = { ...data } as Record<string, unknown>;
+
+  const createdAt = normalizedData.createdAt as { toDate?: () => Date };
+  const updatedAt = normalizedData.updatedAt as { toDate?: () => Date };
+
+  if (createdAt && typeof createdAt.toDate === "function") {
+    normalizedData.createdAt = createdAt.toDate();
+  }
+
+  if (updatedAt && typeof updatedAt.toDate === "function") {
+    normalizedData.updatedAt = updatedAt.toDate();
+  }
+
+  return normalizedData as T;
+}
+
 export const firestore = {
-  async save(collName: string, data: any) {
+  async save<T extends { slug?: string; createdAt?: Date; updatedAt?: Date }>(
+    collName: string,
+    data: T,
+  ): Promise<void> {
+    if (!data.slug) {
+      throw new Error("Missing slug field");
+    }
+
     try {
-      data.createdAt = data.updatedAt = new Date();
+      const now = new Date();
+      const payload = {
+        ...data,
+        createdAt: data.createdAt ?? now,
+        updatedAt: now,
+      };
 
       const collectionRef = collection(db, collName);
-      await setDoc(doc(collectionRef, data.slug), data, { merge: true });
-    } catch (e) {
-      console.error("Error adding document: ", e);
+      await setDoc(doc(collectionRef, data.slug), payload, { merge: true });
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      if (error instanceof Error) {
+        throw error;
+      }
       throw new Error("Error adding document");
     }
   },
 
-  async find(collName: string): Promise<unknown[]> {
+  async find<T>(collName: string): Promise<T[]> {
     try {
       const querySnapshot = await getDocs(collection(db, collName));
-      const documents: unknown[] = [];
-      querySnapshot.forEach((doc) =>
-        documents.push({
-          ...doc.data(),
-          // Only plain objects can be passed to Client Components from Server Components
-          createdAt: doc.data().createdAt.toDate(),
-          updatedAt: doc.data().updatedAt.toDate(),
-        })
-      );
+      const documents: T[] = [];
+      querySnapshot.forEach((docSnap) => {
+        documents.push(normalizeTimestampFields<T>(docSnap.data()));
+      });
+
       return documents;
     } catch (e) {
       console.error("Error fetching documents: ", e);
@@ -48,52 +77,46 @@ export const firestore = {
     }
   },
 
-  async findById(collection: string, id: string): Promise<unknown> {
+  async findById<T>(collection: string, id: string): Promise<T> {
     try {
       const docRef = doc(db, collection, id);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        return {
-          ...docSnap.data(),
-          // Only plain objects can be passed to Client Components from Server Components
-          createdAt: docSnap.data().createdAt.toDate(),
-          updatedAt: docSnap.data().updatedAt.toDate(),
-        };
+        return normalizeTimestampFields<T>(docSnap.data());
       } else {
-        console.error("Document not found");
+        throw new Error("Document not found");
       }
-    } catch (e) {
-      console.error("Error fetching document: ", e);
+    } catch (error) {
+      console.error("Error fetching document: ", error);
+      if (error instanceof Error && error.message === "Document not found") {
+        throw error;
+      }
       throw new Error("Error fetching document");
     }
   },
 
-  async findWhere(
+  async findWhere<T>(
     collName: string,
     ...constraints: Array<{
       field: string;
       operator: WhereFilterOp;
       value: unknown;
     }>
-  ): Promise<unknown[]> {
+  ): Promise<T[]> {
     try {
       const queryConstraints: QueryConstraint[] = constraints.map(
         (constraint) =>
-          where(constraint.field, constraint.operator, constraint.value)
+          where(constraint.field, constraint.operator, constraint.value),
       );
 
       const q = query(collection(db, collName), ...queryConstraints);
       const querySnapshot = await getDocs(q);
 
-      const documents: unknown[] = [];
-      querySnapshot.forEach((doc) =>
-        documents.push({
-          ...doc.data(),
-          // Only plain objects can be passed to Client Components from Server Components
-          createdAt: doc.data().createdAt.toDate(),
-          updatedAt: doc.data().updatedAt.toDate(),
-        })
-      );
+      const documents: T[] = [];
+      querySnapshot.forEach((docSnap) => {
+        documents.push(normalizeTimestampFields<T>(docSnap.data()));
+      });
+
       return documents;
     } catch (e) {
       console.error("Error fetching documents: ", e);
@@ -101,7 +124,7 @@ export const firestore = {
     }
   },
 
-  getDocRef(collection: string, id: string): DocumentReference {
+  getDocRef(collection: string, id: string): DocumentReference<DocumentData> {
     try {
       return doc(db, collection, id);
     } catch (e) {

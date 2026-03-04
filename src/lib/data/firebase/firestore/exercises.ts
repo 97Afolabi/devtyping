@@ -46,7 +46,7 @@ export const firestoreExercise = {
       // Filter out fields with undefined values
       const filteredDetails = Object.fromEntries(
         // eslint-disable-next-line no-unused-vars
-        Object.entries(details).filter(([_, value]) => value !== undefined)
+        Object.entries(details).filter(([_, value]) => value !== undefined),
       );
 
       await Promise.all([
@@ -61,7 +61,7 @@ export const firestoreExercise = {
 
   async findAllActive(topicSlug: string): Promise<ExerciseSummary[]> {
     try {
-      const data = (await firestore.findWhere(
+      const data = await firestore.findWhere<ExerciseSummary>(
         "exercises",
         {
           field: "topicSlug",
@@ -72,8 +72,8 @@ export const firestoreExercise = {
           field: "isActive",
           operator: "==",
           value: true,
-        }
-      )) as ExerciseSummary[];
+        },
+      );
       return data;
     } catch (e) {
       console.error("Error fetching documents: ", e);
@@ -83,7 +83,7 @@ export const firestoreExercise = {
 
   async findAllInactive(topicSlug: string): Promise<ExerciseSummary[]> {
     try {
-      const data = (await firestore.findWhere(
+      const data = await firestore.findWhere<ExerciseSummary>(
         "exercises",
         {
           field: "topicSlug",
@@ -94,8 +94,8 @@ export const firestoreExercise = {
           field: "isActive",
           operator: "==",
           value: false,
-        }
-      )) as ExerciseSummary[];
+        },
+      );
       return data;
     } catch (e) {
       console.error("Error fetching documents: ", e);
@@ -104,16 +104,13 @@ export const firestoreExercise = {
   },
 
   async findById(
-    id: string
+    id: string,
   ): Promise<{ summary: ExerciseSummary; detail: SampleSelectedProp }> {
     try {
       const [summary, detail] = await Promise.all([
-        (await firestore.findById("exercises", id)) as ExerciseSummary,
+        firestore.findById<ExerciseSummary>("exercises", id),
 
-        (await firestore.findById(
-          "exercise_details",
-          id
-        )) as SampleSelectedProp,
+        firestore.findById<SampleSelectedProp>("exercise_details", id),
       ]);
       return { summary, detail };
     } catch (e) {

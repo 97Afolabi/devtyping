@@ -1,7 +1,7 @@
 import { firestore } from "./firestore";
 
 export interface User {
-  id: string;
+  slug: string;
   username: string;
   isActive: boolean;
   isAdmin: boolean;
@@ -21,11 +21,11 @@ export const firestoreUser = {
 
   async findActive(): Promise<User[]> {
     try {
-      return (await firestore.findWhere("users", {
+      return await firestore.findWhere<User>("users", {
         field: "isActive",
         operator: "==",
         value: true,
-      })) as User[];
+      });
     } catch (e) {
       console.error("Error fetching documents: ", e);
       throw new Error("Error fetching documents");
@@ -34,11 +34,11 @@ export const firestoreUser = {
 
   async findInActive(): Promise<User[]> {
     try {
-      const data = (await firestore.findWhere("users", {
+      const data = await firestore.findWhere<User>("users", {
         field: "isActive",
         operator: "==",
         value: false,
-      })) as User[];
+      });
       return data;
     } catch (e) {
       console.error("Error fetching documents: ", e);
@@ -48,7 +48,7 @@ export const firestoreUser = {
 
   async findById(id: string): Promise<User> {
     try {
-      return (await firestore.findById("users", id)) as User;
+      return await firestore.findById<User>("users", id);
     } catch (e) {
       console.error("Error fetching document: ", e);
       throw new Error("Error fetching document");

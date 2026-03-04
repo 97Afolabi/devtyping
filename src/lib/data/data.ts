@@ -26,7 +26,7 @@ export const topic = {
       }
       // else  pull from Firestore
       topic = (await firestoreTopic.findById(
-        slug
+        slug,
       )) as unknown as SampleUnselectedProp;
 
       // add to IndexedDB
@@ -59,7 +59,7 @@ export const topic = {
 
       // pull from Firestore
       topic = (await firestoreTopic.findById(
-        slug
+        slug,
       )) as unknown as SampleUnselectedProp;
 
       // add to IndexedDB
@@ -102,7 +102,7 @@ export const exercise = {
       });
 
       await firestoreTopic.updateInactiveCount(topic, "up");
-    } catch (error) {
+    } catch {
       throw new Error("Unable to save exercise");
     }
   },
