@@ -1,6 +1,11 @@
+const scriptSrc =
+  process.env.NODE_ENV === "production"
+    ? "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://apis.google.com"
+    : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://apis.google.com";
+
 const contentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://apis.google.com",
+  scriptSrc,
   "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://www.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.google.com",
   "frame-src https://apis.google.com https://accounts.google.com https://*.firebaseapp.com",
   "img-src 'self' data:",
