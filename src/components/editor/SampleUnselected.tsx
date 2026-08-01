@@ -2,19 +2,38 @@
 import { useEffect, useState } from "react";
 import { topic } from "../../lib/data/data";
 import { ExerciseSummary } from "../../lib/interfaces/Exercise";
+import { SampleUnselectedProp } from "../../lib/interfaces/Editor";
 import Sidebar from "./Sidebar";
 
 export default function SampleUnselected({
   prefix,
   slug,
+  initialData,
 }: {
   prefix: "" | "review";
   slug: string;
+  initialData?: SampleUnselectedProp | null;
 }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [samples, setSamples] = useState<ExerciseSummary[]>([]);
+  const [title, setTitle] = useState(initialData?.title ?? "");
+  const [description, setDescription] = useState(
+    initialData?.description ?? "",
+  );
+  const [samples, setSamples] = useState<ExerciseSummary[]>(
+    initialData?.samples ?? [],
+  );
   useEffect(() => {
+    if (initialData) {
+      // Server already fetched this via SSR — sync state from it (covers
+      // client-side navigation between topics, where props change but this
+      // component instance stays mounted) and warm IndexedDB from it
+      // instead of re-fetching the same data over the network.
+      handleTitleUpdate(initialData.title);
+      handleDescriptionUpdate(initialData.description);
+      handleSamplesUpdate(initialData.samples);
+      topic.warmCache(initialData, prefix);
+      return;
+    }
+
     const getSamples = async () => {
       const data =
         prefix === "review"
@@ -29,7 +48,7 @@ export default function SampleUnselected({
     };
 
     getSamples();
-  }, [prefix, slug]);
+  }, [prefix, slug, initialData]);
 
   const handleTitleUpdate = (title: string) => {
     setTitle(title);
