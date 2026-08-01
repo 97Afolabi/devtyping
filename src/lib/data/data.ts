@@ -1,6 +1,10 @@
 import { adjustSpaces } from "../constants/strings";
 import { SampleUnselectedProp } from "../interfaces/Editor";
-import { Exercise, ExerciseDetails } from "../interfaces/Exercise";
+import {
+  Exercise,
+  ExerciseDetails,
+  ExerciseSummary,
+} from "../interfaces/Exercise";
 import { firestoreExercise } from "./firebase/firestore/exercises";
 import { firestoreTopic } from "./firebase/firestore/topics";
 import {
@@ -75,6 +79,19 @@ export const topic = {
       await deleteIDB();
       throw new Error("Unable to get topic. Please refresh the page");
     }
+  },
+
+  // Persists server-fetched data (e.g. SSR initialData) into IndexedDB
+  // without hitting the network, so a subsequent client-side read can be
+  // served from cache instead of re-fetching data the server already sent.
+  async warmCache(
+    data: SampleUnselectedProp,
+    prefix: "" | "review",
+  ): Promise<void> {
+    await IDBTopic.set(data);
+    const saveExercises =
+      prefix === "review" ? IDBInactiveExercise.saveMany : IDBExercise.saveMany;
+    await saveExercises(data.samples);
   },
 };
 
@@ -169,5 +186,41 @@ export const exercise = {
       await deleteIDB();
       throw new Error("Unable to get exercise. Please refresh the page");
     }
+  },
+
+  // Persists server-fetched data (e.g. SSR initialData) into IndexedDB
+  // without hitting the network, so a subsequent client-side read can be
+  // served from cache instead of re-fetching data the server already sent.
+  async warmCache(data: Exercise, prefix: "" | "review"): Promise<void> {
+    const summary: ExerciseSummary = {
+      id: data.id,
+      slug: data.slug,
+      title: data.title,
+      topicSlug: data.topicSlug,
+      author: data.author,
+      downVotes: data.downVotes,
+      upVotes: data.upVotes,
+      isActive: data.isActive,
+      source: data.source,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+    };
+    const details: ExerciseDetails = {
+      slug: data.slug,
+      prerequisite: data.prerequisite,
+      contributors: data.contributors,
+      text: data.text,
+      practiceLinks: data.practiceLinks,
+      category: data.category,
+      lineCount: data.lineCount,
+      difficulty: data.difficulty,
+    };
+
+    await Promise.all([
+      prefix === "review"
+        ? IDBInactiveExercise.set(summary)
+        : IDBExercise.set(summary),
+      IDBExerciseDetails.set(details),
+    ]);
   },
 };

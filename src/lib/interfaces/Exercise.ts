@@ -13,23 +13,6 @@ export interface ExercisePracticeLink {
   free: boolean;
 }
 
-export interface Exercise {
-  id?: string;
-  title: string;
-  slug?: string;
-  prerequisite?: string;
-  topicSlug: string;
-  text: string;
-  author: string;
-  contributors?: string[];
-  downVotes: number;
-  upVotes: number;
-  isActive: boolean;
-  source?: ExerciseSource;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
 export interface ExerciseSummary {
   id?: string;
   slug?: string;
@@ -54,3 +37,8 @@ export interface ExerciseDetails {
   lineCount?: number;
   difficulty?: 1 | 2 | 3;
 }
+
+// The full merged shape returned by exercise.getActive()/getInactive() —
+// exercises are stored split across the `exercises` (summary) and
+// `exercise_details` (detail) collections, then combined on read.
+export type Exercise = ExerciseSummary & ExerciseDetails;

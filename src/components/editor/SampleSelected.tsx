@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ExerciseSummary } from "../../lib/interfaces/Exercise";
+import { Exercise, ExerciseSummary } from "../../lib/interfaces/Exercise";
 import { exercise } from "../../lib/data/data";
 import Sidebar from "./Sidebar";
 import Timer from "./Timer";
@@ -9,21 +9,46 @@ export default function SampleSelected({
   prefix,
   topicSlug,
   exerciseSlug,
+  initialData,
 }: {
   prefix: "" | "review";
   topicSlug: string;
   exerciseSlug: string;
+  initialData?: Exercise | null;
 }) {
   const [isTimerRunning, setTimerRunning] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [data, setData] = useState<ExerciseSummary[]>([]);
+  const [data, setData] = useState<ExerciseSummary[]>(
+    initialData ? [initialData as ExerciseSummary] : [],
+  );
   const [buttonText, setCopyButtonText] = useState("Copy");
   const [indicatorColour, setIndicatorColour] = useState("rgba(255, 255, 255)");
 
-  const [textInput, setTextInput] = useState("");
-  const [title, setTitle] = useState("");
-  const [contributors, setContributors] = useState<string[]>([]);
+  const [textInput, setTextInput] = useState(initialData?.text ?? "");
+  const [title, setTitle] = useState(initialData?.title ?? "");
+  const [category, setCategory] = useState(initialData?.category ?? "");
+  const [practiceLinks, setPracticeLinks] = useState(
+    initialData?.practiceLinks ?? [],
+  );
+  const [contributors, setContributors] = useState<string[]>(
+    initialData?.contributors ?? [],
+  );
   useEffect(() => {
+    if (initialData) {
+      // Server already fetched this via SSR — sync state from it (covers
+      // client-side navigation between exercises, where props change but
+      // this component instance stays mounted) and warm IndexedDB from it
+      // instead of re-fetching the same data over the network.
+      setData([initialData as ExerciseSummary]);
+      setTitle(initialData.title);
+      setTextInput(initialData.text);
+      setCategory(initialData.category ?? "");
+      setPracticeLinks(initialData.practiceLinks ?? []);
+      setContributors(initialData.contributors ?? []);
+      exercise.warmCache(initialData, prefix);
+      return;
+    }
+
     const getExercise = async () => {
       const data =
         prefix === "review"
@@ -37,13 +62,15 @@ export default function SampleSelected({
       setData([summary]);
       setTitle(data.title);
       setTextInput(data.text);
+      setCategory(data.category ?? "");
+      setPracticeLinks(data.practiceLinks ?? []);
       if (data.contributors) {
         setContributors(data.contributors);
       }
     };
 
     getExercise();
-  }, [exerciseSlug, prefix]);
+  }, [exerciseSlug, prefix, initialData]);
 
   const handleCopyButtonClick: React.MouseEventHandler<
     HTMLButtonElement
@@ -125,14 +152,36 @@ export default function SampleSelected({
           style={{ height: "90%" }}
         >
           <section
-            className="flex h-8 justify-between py-1 px-4 bg-white"
+            className="flex h-8 justify-between items-center py-1 px-4 bg-white"
             style={{
               border: "1px solid " + indicatorColour,
             }}
           >
-            <div id="title">{title}</div>
+            <h1 id="title" className="m-0 text-base font-semibold">
+              {title}
+              {(topicSlug || category) && (
+                <span className="ml-2 text-xs font-normal text-gray-500">
+                  {[topicSlug, category].filter(Boolean).join(" · ")}
+                </span>
+              )}
+            </h1>
             <Timer isTyping={isTimerRunning}></Timer>
           </section>
+          {practiceLinks.length > 0 && (
+            <div className="flex flex-wrap gap-2 px-4 py-1 bg-white text-xs">
+              {practiceLinks.map((link) => (
+                <a
+                  key={link.url}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-slate-600 hover:text-slate-900"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          )}
           <pre className="p-2 max-h-full overflow-scroll">
             <code
               className="pb-10 text-start select-none text-gray-700"
