@@ -2,18 +2,25 @@
 import { useEffect, useState } from "react";
 import { topic } from "../../lib/data/data";
 import { ExerciseSummary } from "../../lib/interfaces/Exercise";
+import { SampleUnselectedProp } from "../../lib/interfaces/Editor";
 import Sidebar from "./Sidebar";
 
 export default function SampleUnselected({
   prefix,
   slug,
+  initialData,
 }: {
   prefix: "" | "review";
   slug: string;
+  initialData?: SampleUnselectedProp | null;
 }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [samples, setSamples] = useState<ExerciseSummary[]>([]);
+  const [title, setTitle] = useState(initialData?.title ?? "");
+  const [description, setDescription] = useState(
+    initialData?.description ?? "",
+  );
+  const [samples, setSamples] = useState<ExerciseSummary[]>(
+    initialData?.samples ?? [],
+  );
   useEffect(() => {
     const getSamples = async () => {
       const data =
