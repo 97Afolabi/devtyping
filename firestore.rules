@@ -17,6 +17,21 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    function isValidSource(source) {
+      return source is map
+        && source.kind in ["original", "derived", "verbatim"]
+        && source.origin is string && source.origin.size() > 0
+        && source.license in ["MIT", "CC-BY-SA-4.0", "Apache-2.0", "original"]
+        && (
+          source.license == "original"
+          || (
+            "attribution" in source
+            && source.attribution is string
+            && source.attribution.size() > 0
+          )
+        );
+    }
+
     match /users/{userId} {
       allow read: if isSignedIn();
       allow create: if isOwner(userId)
@@ -40,16 +55,28 @@ service cloud.firestore {
       allow read: if true;
       allow create: if isSignedIn()
         && request.resource.data.isActive == false
-        && request.resource.data.author == userDoc().data.username;
+        && request.resource.data.author == userDoc().data.username
+        && isValidSource(request.resource.data.source);
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }
 
     match /exercise_details/{exerciseId} {
       allow read: if true;
+      // Per-item shape (label/url/provider/free) isn't enforced here since
+      // Firestore rules can't validate arbitrary-length array contents;
+      // that's done server-side in POST /api/exercises. This only guards
+      // type and a sane upper bound.
       allow create: if isSignedIn()
         && request.resource.data.slug == exerciseId
-        && request.resource.data.text is string;
+        && request.resource.data.text is string
+        && (
+          !("practiceLinks" in request.resource.data)
+          || (
+            request.resource.data.practiceLinks is list
+            && request.resource.data.practiceLinks.size() <= 10
+          )
+        );
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }

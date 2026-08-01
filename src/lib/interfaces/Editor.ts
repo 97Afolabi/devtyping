@@ -1,4 +1,4 @@
-import { ExerciseSummary } from "./Exercise";
+import { ExercisePracticeLink, ExerciseSummary } from "./Exercise";
 
 export interface SampleUnselectedProp {
   title: string;
@@ -11,4 +11,8 @@ export interface SampleSelectedProp {
   text: string;
   contributors: string[];
   slug: string;
+  practiceLinks?: ExercisePracticeLink[];
+  category?: string;
+  lineCount?: number;
+  difficulty?: 1 | 2 | 3;
 }

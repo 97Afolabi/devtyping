@@ -4,6 +4,7 @@ import {
   generateExerciseSlug,
   generateSlug,
 } from "../constants/strings";
+import { ExercisePracticeLink, ExerciseSource } from "../interfaces/Exercise";
 import { adminDb } from "./firebase-admin";
 
 interface CreateTopicInput {
@@ -17,6 +18,10 @@ interface CreateExerciseInput {
   topicSlug: string;
   text: string;
   author: string;
+  source: ExerciseSource;
+  practiceLinks?: ExercisePracticeLink[];
+  category?: string;
+  difficulty?: 1 | 2 | 3;
 }
 
 export async function createTopic(input: CreateTopicInput): Promise<void> {
@@ -54,6 +59,8 @@ export async function createExercise(
 
     const summaryRef = adminDb.collection("exercises").doc(slug);
     const detailRef = adminDb.collection("exercise_details").doc(slug);
+    const normalizedText = adjustSpaces(input.text);
+    const lineCount = normalizedText.split("\n").length;
 
     transaction.set(
       summaryRef,
@@ -62,6 +69,7 @@ export async function createExercise(
         title: input.title,
         topicSlug: input.topicSlug,
         author: input.author,
+        source: input.source,
         downVotes: 0,
         upVotes: 0,
         isActive: false,
@@ -75,7 +83,13 @@ export async function createExercise(
       detailRef,
       {
         slug,
-        text: adjustSpaces(input.text),
+        text: normalizedText,
+        lineCount,
+        ...(input.practiceLinks?.length
+          ? { practiceLinks: input.practiceLinks }
+          : {}),
+        ...(input.category ? { category: input.category } : {}),
+        ...(input.difficulty ? { difficulty: input.difficulty } : {}),
       },
       { merge: true },
     );
