@@ -4,7 +4,7 @@ import {
   generateExerciseSlug,
   generateSlug,
 } from "../constants/strings";
-import { ExercisePracticeLink } from "../interfaces/Exercise";
+import { ExercisePracticeLink, ExerciseSource } from "../interfaces/Exercise";
 import { adminDb } from "./firebase-admin";
 
 interface CreateTopicInput {
@@ -18,6 +18,7 @@ interface CreateExerciseInput {
   topicSlug: string;
   text: string;
   author: string;
+  source: ExerciseSource;
   practiceLinks?: ExercisePracticeLink[];
   category?: string;
   difficulty?: 1 | 2 | 3;
@@ -68,6 +69,7 @@ export async function createExercise(
         title: input.title,
         topicSlug: input.topicSlug,
         author: input.author,
+        source: input.source,
         downVotes: 0,
         upVotes: 0,
         isActive: false,
