@@ -6,10 +6,11 @@ const createJestConfig = nextJest({
 
 const config = {
   testEnvironment: "node",
-  testMatch: ["<rootDir>/tests/jest/**/*.test.ts"],
+  testMatch: ["<rootDir>/tests/jest/**/*.test.{ts,tsx}"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   clearMocks: true,
 };
 
