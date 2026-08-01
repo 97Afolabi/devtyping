@@ -32,62 +32,77 @@ function toExerciseSummary(
 export async function getTopicSampleData(
   topicSlug: string,
 ): Promise<SampleUnselectedProp | null> {
-  const topicSnap = await adminDb.collection("topics").doc(topicSlug).get();
-  if (!topicSnap.exists) {
+  try {
+    const topicSnap = await adminDb.collection("topics").doc(topicSlug).get();
+    if (!topicSnap.exists) {
+      return null;
+    }
+
+    const topicData = topicSnap.data() as FirebaseFirestore.DocumentData;
+
+    const exercisesSnap = await adminDb
+      .collection("exercises")
+      .where("topicSlug", "==", topicSlug)
+      .where("isActive", "==", true)
+      .get();
+
+    const samples = exercisesSnap.docs.map((doc) =>
+      toExerciseSummary(doc.id, doc.data()),
+    );
+
+    return {
+      title: topicData.title,
+      slug: topicSlug,
+      description: topicData.description,
+      samples,
+    };
+  } catch (error) {
+    // SSR is a progressive enhancement here: if the Admin SDK can't reach
+    // Firestore (e.g. missing/invalid credentials), fall back to null so
+    // the client component's own client-side fetch takes over instead of
+    // crashing the page render.
+    console.error("getTopicSampleData failed, falling back client-side", error);
     return null;
   }
-
-  const topicData = topicSnap.data() as FirebaseFirestore.DocumentData;
-
-  const exercisesSnap = await adminDb
-    .collection("exercises")
-    .where("topicSlug", "==", topicSlug)
-    .where("isActive", "==", true)
-    .get();
-
-  const samples = exercisesSnap.docs.map((doc) =>
-    toExerciseSummary(doc.id, doc.data()),
-  );
-
-  return {
-    title: topicData.title,
-    slug: topicSlug,
-    description: topicData.description,
-    samples,
-  };
 }
 
 export async function getActiveExerciseData(
   exerciseSlug: string,
 ): Promise<Exercise | null> {
-  const [summarySnap, detailSnap] = await Promise.all([
-    adminDb.collection("exercises").doc(exerciseSlug).get(),
-    adminDb.collection("exercise_details").doc(exerciseSlug).get(),
-  ]);
+  try {
+    const [summarySnap, detailSnap] = await Promise.all([
+      adminDb.collection("exercises").doc(exerciseSlug).get(),
+      adminDb.collection("exercise_details").doc(exerciseSlug).get(),
+    ]);
 
-  if (
-    !summarySnap.exists ||
-    !detailSnap.exists ||
-    summarySnap.data()?.isActive !== true
-  ) {
+    if (
+      !summarySnap.exists ||
+      !detailSnap.exists ||
+      summarySnap.data()?.isActive !== true
+    ) {
+      return null;
+    }
+
+    const summary = toExerciseSummary(
+      summarySnap.id,
+      summarySnap.data() as FirebaseFirestore.DocumentData,
+    );
+    const detailData = detailSnap.data() as FirebaseFirestore.DocumentData;
+
+    return {
+      ...summary,
+      slug: detailData.slug ?? summary.slug,
+      prerequisite: detailData.prerequisite,
+      contributors: detailData.contributors,
+      text: detailData.text,
+      practiceLinks: detailData.practiceLinks,
+      category: detailData.category,
+      lineCount: detailData.lineCount,
+      difficulty: detailData.difficulty,
+    };
+  } catch (error) {
+    // Same fallback rationale as getTopicSampleData above.
+    console.error("getActiveExerciseData failed, falling back client-side", error);
     return null;
   }
-
-  const summary = toExerciseSummary(
-    summarySnap.id,
-    summarySnap.data() as FirebaseFirestore.DocumentData,
-  );
-  const detailData = detailSnap.data() as FirebaseFirestore.DocumentData;
-
-  return {
-    ...summary,
-    slug: detailData.slug ?? summary.slug,
-    prerequisite: detailData.prerequisite,
-    contributors: detailData.contributors,
-    text: detailData.text,
-    practiceLinks: detailData.practiceLinks,
-    category: detailData.category,
-    lineCount: detailData.lineCount,
-    difficulty: detailData.difficulty,
-  };
 }
