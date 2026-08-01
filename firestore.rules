@@ -47,9 +47,20 @@ service cloud.firestore {
 
     match /exercise_details/{exerciseId} {
       allow read: if true;
+      // Per-item shape (label/url/provider/free) isn't enforced here since
+      // Firestore rules can't validate arbitrary-length array contents;
+      // that's done server-side in POST /api/exercises. This only guards
+      // type and a sane upper bound.
       allow create: if isSignedIn()
         && request.resource.data.slug == exerciseId
-        && request.resource.data.text is string;
+        && request.resource.data.text is string
+        && (
+          !("practiceLinks" in request.resource.data)
+          || (
+            request.resource.data.practiceLinks is list
+            && request.resource.data.practiceLinks.size() <= 10
+          )
+        );
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }

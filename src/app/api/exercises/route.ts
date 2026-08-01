@@ -1,11 +1,53 @@
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "../../../lib/server/firebase-auth";
 import { createExercise } from "../../../lib/server/firestore-admin";
+import { ExercisePracticeLink } from "../../../lib/interfaces/Exercise";
 
 interface CreateExerciseRequestBody {
   title?: string;
   topic?: string;
   text?: string;
+  practiceLinks?: unknown;
+}
+
+const PRACTICE_LINK_PROVIDERS = new Set([
+  "leetcode",
+  "hackerrank",
+  "codewars",
+  "other",
+]);
+const MAX_PRACTICE_LINKS = 10;
+
+function parsePracticeLinks(value: unknown): ExercisePracticeLink[] | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (!Array.isArray(value) || value.length > MAX_PRACTICE_LINKS) {
+    throw new Error(
+      `practiceLinks must be an array of at most ${MAX_PRACTICE_LINKS} items`,
+    );
+  }
+
+  return value.map((item, index) => {
+    if (
+      typeof item !== "object" ||
+      item === null ||
+      typeof (item as Record<string, unknown>).label !== "string" ||
+      !(item as Record<string, string>).label.trim() ||
+      typeof (item as Record<string, unknown>).url !== "string" ||
+      !(item as Record<string, string>).url.trim() ||
+      typeof (item as Record<string, unknown>).provider !== "string" ||
+      !PRACTICE_LINK_PROVIDERS.has(
+        (item as Record<string, string>).provider,
+      ) ||
+      typeof (item as Record<string, unknown>).free !== "boolean"
+    ) {
+      throw new Error(`practiceLinks[${index}] is invalid`);
+    }
+
+    return item as ExercisePracticeLink;
+  });
 }
 
 export async function POST(request: Request) {
@@ -24,11 +66,25 @@ export async function POST(request: Request) {
       );
     }
 
+    let practiceLinks: ExercisePracticeLink[] | undefined;
+    try {
+      practiceLinks = parsePracticeLinks(body.practiceLinks);
+    } catch (error) {
+      return NextResponse.json(
+        {
+          error:
+            error instanceof Error ? error.message : "Invalid practiceLinks",
+        },
+        { status: 400 },
+      );
+    }
+
     await createExercise({
       title,
       topicSlug: topic,
       text,
       author: user.username,
+      practiceLinks,
     });
 
     return NextResponse.json({ ok: true });

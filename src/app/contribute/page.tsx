@@ -4,17 +4,52 @@ import { getAuthUser } from "../../lib/data/auth";
 import { firestoreTopic } from "../../lib/data/firebase/firestore/topics";
 import { postWithAuth } from "../../lib/data/firebase/auth/request";
 import { TopicSummary } from "../../lib/interfaces/TopicSummary";
+import { ExercisePracticeLink } from "../../lib/interfaces/Exercise";
 import SuccessMessage from "../../components/editor/SuccessMessage";
 import ValidationError from "../../components/editor/ValidationError";
 import { isAuth } from "../../components/IsAuth";
+
+const PRACTICE_LINK_PROVIDERS: ExercisePracticeLink["provider"][] = [
+  "leetcode",
+  "hackerrank",
+  "codewars",
+  "other",
+];
+
+const emptyPracticeLink = (): ExercisePracticeLink => ({
+  label: "",
+  url: "",
+  provider: "leetcode",
+  free: true,
+});
 
 const Contribute = () => {
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [text, setText] = useState("");
+  const [practiceLinks, setPracticeLinks] = useState<ExercisePracticeLink[]>(
+    [],
+  );
   const [topicSummaries, setTopicSummaries] = useState<TopicSummary[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState<string[]>([]);
+
+  const addPracticeLink = () => {
+    setPracticeLinks((links) => [...links, emptyPracticeLink()]);
+  };
+
+  const updatePracticeLink = (
+    index: number,
+    patch: Partial<ExercisePracticeLink>,
+  ) => {
+    setPracticeLinks((links) =>
+      links.map((link, i) => (i === index ? { ...link, ...patch } : link)),
+    );
+  };
+
+  const removePracticeLink = (index: number) => {
+    setPracticeLinks((links) => links.filter((_, i) => i !== index));
+  };
 
   useEffect(() => {
     const getTopics = async () => {
@@ -56,10 +91,17 @@ const Contribute = () => {
       return null;
     }
 
+    const filledPracticeLinks = practiceLinks.filter(
+      (link) => link.label.trim() && link.url.trim(),
+    );
+
     const response = await postWithAuth("/api/exercises", {
       title,
       topic,
       text,
+      practiceLinks: filledPracticeLinks.length
+        ? filledPracticeLinks
+        : undefined,
     });
 
     if (!response.ok) {
@@ -75,6 +117,7 @@ const Contribute = () => {
     setTitle("");
     setTopic("");
     setText("");
+    setPracticeLinks([]);
   };
 
   return (
@@ -144,6 +187,80 @@ const Contribute = () => {
             rows={20}
             required={true}
           />
+        </div>
+
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="block text-gray-700 text-sm font-bold">
+              Practice links (optional)
+            </span>
+            <button
+              type="button"
+              onClick={addPracticeLink}
+              className="text-sm text-slate-600 hover:text-slate-900 font-bold"
+            >
+              + Add link
+            </button>
+          </div>
+          {practiceLinks.map((link, index) => (
+            <div
+              key={index}
+              className="flex flex-col md:flex-row gap-2 mb-2 items-start md:items-center"
+            >
+              <input
+                type="text"
+                value={link.label}
+                onChange={(e) =>
+                  updatePracticeLink(index, { label: e.target.value })
+                }
+                placeholder="Problem title, e.g. Linked List Cycle"
+                className="appearance-none border rounded-sm w-full md:w-2/5 py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+              />
+              <input
+                type="url"
+                value={link.url}
+                onChange={(e) =>
+                  updatePracticeLink(index, { url: e.target.value })
+                }
+                placeholder="https://..."
+                className="appearance-none border rounded-sm w-full md:w-2/5 py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+              />
+              <select
+                value={link.provider}
+                onChange={(e) =>
+                  updatePracticeLink(index, {
+                    provider: e.target
+                      .value as ExercisePracticeLink["provider"],
+                  })
+                }
+                className="border rounded-sm py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+              >
+                {PRACTICE_LINK_PROVIDERS.map((provider) => (
+                  <option value={provider} key={provider}>
+                    {provider}
+                  </option>
+                ))}
+              </select>
+              <label className="flex items-center gap-1 text-sm text-gray-700 whitespace-nowrap">
+                <input
+                  type="checkbox"
+                  checked={link.free}
+                  onChange={(e) =>
+                    updatePracticeLink(index, { free: e.target.checked })
+                  }
+                />
+                Free
+              </label>
+              <button
+                type="button"
+                onClick={() => removePracticeLink(index)}
+                className="text-sm text-red-600 hover:text-red-900"
+                aria-label="Remove practice link"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
         </div>
 
         <div className="flex justify-center">

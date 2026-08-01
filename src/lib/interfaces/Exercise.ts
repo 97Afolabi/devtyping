@@ -6,6 +6,13 @@ export interface ExerciseSource {
   attribution?: string;
 }
 
+export interface ExercisePracticeLink {
+  label: string;
+  url: string;
+  provider: "leetcode" | "hackerrank" | "codewars" | "other";
+  free: boolean;
+}
+
 export interface Exercise {
   id?: string;
   title: string;
@@ -42,4 +49,5 @@ export interface ExerciseDetails {
   prerequisite?: string;
   contributors?: string[];
   text: string;
+  practiceLinks?: ExercisePracticeLink[];
 }

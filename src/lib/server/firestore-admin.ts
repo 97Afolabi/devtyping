@@ -4,6 +4,7 @@ import {
   generateExerciseSlug,
   generateSlug,
 } from "../constants/strings";
+import { ExercisePracticeLink } from "../interfaces/Exercise";
 import { adminDb } from "./firebase-admin";
 
 interface CreateTopicInput {
@@ -17,6 +18,7 @@ interface CreateExerciseInput {
   topicSlug: string;
   text: string;
   author: string;
+  practiceLinks?: ExercisePracticeLink[];
 }
 
 export async function createTopic(input: CreateTopicInput): Promise<void> {
@@ -76,6 +78,9 @@ export async function createExercise(
       {
         slug,
         text: adjustSpaces(input.text),
+        ...(input.practiceLinks?.length
+          ? { practiceLinks: input.practiceLinks }
+          : {}),
       },
       { merge: true },
     );
