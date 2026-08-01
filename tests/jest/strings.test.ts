@@ -3,6 +3,7 @@ import {
   generateExerciseSlug,
   generateSlug,
   replaceHTMLChar,
+  truncateDescription,
 } from "../../src/lib/constants/strings";
 
 describe("strings utilities", () => {
@@ -37,5 +38,26 @@ describe("strings utilities", () => {
 
   it("normalizes spaces and line breaks", () => {
     expect(adjustSpaces("a\n\n\n b\t    c")).toBe("a\n\n b    c");
+  });
+
+  it("leaves short descriptions untouched", () => {
+    expect(truncateDescription("Short description")).toBe(
+      "Short description",
+    );
+  });
+
+  it("truncates long descriptions at a word boundary with an ellipsis", () => {
+    const long = "word ".repeat(50).trim();
+    const result = truncateDescription(long, 20);
+
+    expect(result.length).toBeLessThanOrEqual(20);
+    expect(result.endsWith("…")).toBe(true);
+    expect(result).not.toMatch(/\s…$/);
+  });
+
+  it("hard-truncates when there's no word boundary to break on", () => {
+    const result = truncateDescription("a".repeat(30), 10);
+
+    expect(result).toBe("aaaaaaaaa…");
   });
 });

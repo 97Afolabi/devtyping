@@ -38,6 +38,17 @@ export function generateExerciseSlug(title: string): string {
   }
 }
 
+export function truncateDescription(text: string, maxLength = 160): string {
+  const trimmed = text.trim();
+  if (trimmed.length <= maxLength) {
+    return trimmed;
+  }
+
+  const truncated = trimmed.slice(0, maxLength - 1);
+  const lastSpace = truncated.lastIndexOf(" ");
+  return (lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated) + "…";
+}
+
 export function adjustSpaces(input: string): string {
   return (
     input

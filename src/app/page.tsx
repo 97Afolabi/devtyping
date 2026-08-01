@@ -2,6 +2,27 @@ import { firestoreTopic } from "../lib/data/firebase/firestore/topics";
 import AnimatedTexts from "../components/homepage/AnimatedTexts";
 import SummaryCardsList from "../components/homepage/SummaryCardsList";
 
+const baseUrl = process.env.BASE_URL ?? "https://devtyp.i.ng";
+const siteName = process.env.SITE_NAME ?? "DevTyp.i.ng";
+
+function WebApplicationJsonLd() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: siteName,
+    url: baseUrl,
+    description: "Improvement through repetition",
+    applicationCategory: "EducationalApplication",
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
+  );
+}
+
 export default async function Home() {
   const summaries = await firestoreTopic.findAll();
   // Populated topics first; stable sort preserves original order within
@@ -11,6 +32,7 @@ export default async function Home() {
   );
   return (
     <div className="mt-6">
+      <WebApplicationJsonLd />
       <AnimatedTexts />
       <SummaryCardsList summaries={sortedSummaries} />
     </div>
