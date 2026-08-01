@@ -23,10 +23,14 @@ const emptyPracticeLink = (): ExercisePracticeLink => ({
   free: true,
 });
 
+const DIFFICULTIES = [1, 2, 3] as const;
+
 const Contribute = () => {
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [text, setText] = useState("");
+  const [category, setCategory] = useState("");
+  const [difficulty, setDifficulty] = useState<"" | 1 | 2 | 3>("");
   const [practiceLinks, setPracticeLinks] = useState<ExercisePracticeLink[]>(
     [],
   );
@@ -72,6 +76,14 @@ const Contribute = () => {
     setText(e.target.value);
   };
 
+  const handleCategoryUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCategory(e.target.value);
+  };
+
+  const handleDifficultyUpdate = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setDifficulty(e.target.value === "" ? "" : (Number(e.target.value) as 1 | 2 | 3));
+  };
+
   const handleFormSubmission = async (
     e: React.ChangeEvent<HTMLFormElement>,
   ) => {
@@ -102,6 +114,8 @@ const Contribute = () => {
       practiceLinks: filledPracticeLinks.length
         ? filledPracticeLinks
         : undefined,
+      category: category.trim() || undefined,
+      difficulty: difficulty === "" ? undefined : difficulty,
     });
 
     if (!response.ok) {
@@ -117,6 +131,8 @@ const Contribute = () => {
     setTitle("");
     setTopic("");
     setText("");
+    setCategory("");
+    setDifficulty("");
     setPracticeLinks([]);
   };
 
@@ -166,6 +182,49 @@ const Contribute = () => {
                     {topic.title}
                   </option>
                 ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row">
+          <div className="w-full md:w-3/4 mb-4">
+            <label
+              htmlFor="category"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Category (optional)
+            </label>
+            <input
+              type="text"
+              id="category"
+              name="category"
+              value={category}
+              onChange={handleCategoryUpdate}
+              className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+              placeholder="e.g. linked-lists, graphs"
+            />
+          </div>
+
+          <div className="w-full md:w-1/4 md:pl-2 mb-4">
+            <label
+              htmlFor="difficulty"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Difficulty (optional)
+            </label>
+            <select
+              id="difficulty"
+              name="difficulty"
+              value={difficulty}
+              onChange={handleDifficultyUpdate}
+              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-sm leading-tight focus:outline-hidden focus:shadow-outline"
+            >
+              <option value="">Unset</option>
+              {DIFFICULTIES.map((level) => (
+                <option value={level} key={level}>
+                  {level}
+                </option>
+              ))}
             </select>
           </div>
         </div>

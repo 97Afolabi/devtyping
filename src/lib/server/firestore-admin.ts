@@ -19,6 +19,8 @@ interface CreateExerciseInput {
   text: string;
   author: string;
   practiceLinks?: ExercisePracticeLink[];
+  category?: string;
+  difficulty?: 1 | 2 | 3;
 }
 
 export async function createTopic(input: CreateTopicInput): Promise<void> {
@@ -56,6 +58,8 @@ export async function createExercise(
 
     const summaryRef = adminDb.collection("exercises").doc(slug);
     const detailRef = adminDb.collection("exercise_details").doc(slug);
+    const normalizedText = adjustSpaces(input.text);
+    const lineCount = normalizedText.split("\n").length;
 
     transaction.set(
       summaryRef,
@@ -77,10 +81,13 @@ export async function createExercise(
       detailRef,
       {
         slug,
-        text: adjustSpaces(input.text),
+        text: normalizedText,
+        lineCount,
         ...(input.practiceLinks?.length
           ? { practiceLinks: input.practiceLinks }
           : {}),
+        ...(input.category ? { category: input.category } : {}),
+        ...(input.difficulty ? { difficulty: input.difficulty } : {}),
       },
       { merge: true },
     );

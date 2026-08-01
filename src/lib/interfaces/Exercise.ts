@@ -50,4 +50,7 @@ export interface ExerciseDetails {
   contributors?: string[];
   text: string;
   practiceLinks?: ExercisePracticeLink[];
+  category?: string;
+  lineCount?: number;
+  difficulty?: 1 | 2 | 3;
 }

@@ -8,6 +8,30 @@ interface CreateExerciseRequestBody {
   topic?: string;
   text?: string;
   practiceLinks?: unknown;
+  category?: unknown;
+  difficulty?: unknown;
+}
+
+const VALID_DIFFICULTIES = new Set([1, 2, 3]);
+
+function parseCategory(value: unknown): string | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (typeof value !== "string" || !value.trim()) {
+    throw new Error("category must be a non-empty string");
+  }
+  return value.trim();
+}
+
+function parseDifficulty(value: unknown): 1 | 2 | 3 | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (typeof value !== "number" || !VALID_DIFFICULTIES.has(value)) {
+    throw new Error("difficulty must be 1, 2, or 3");
+  }
+  return value as 1 | 2 | 3;
 }
 
 const PRACTICE_LINK_PROVIDERS = new Set([
@@ -67,14 +91,15 @@ export async function POST(request: Request) {
     }
 
     let practiceLinks: ExercisePracticeLink[] | undefined;
+    let category: string | undefined;
+    let difficulty: 1 | 2 | 3 | undefined;
     try {
       practiceLinks = parsePracticeLinks(body.practiceLinks);
+      category = parseCategory(body.category);
+      difficulty = parseDifficulty(body.difficulty);
     } catch (error) {
       return NextResponse.json(
-        {
-          error:
-            error instanceof Error ? error.message : "Invalid practiceLinks",
-        },
+        { error: error instanceof Error ? error.message : "Invalid input" },
         { status: 400 },
       );
     }
@@ -85,6 +110,8 @@ export async function POST(request: Request) {
       text,
       author: user.username,
       practiceLinks,
+      category,
+      difficulty,
     });
 
     return NextResponse.json({ ok: true });

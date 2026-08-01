@@ -12,4 +12,7 @@ export interface SampleSelectedProp {
   contributors: string[];
   slug: string;
   practiceLinks?: ExercisePracticeLink[];
+  category?: string;
+  lineCount?: number;
+  difficulty?: 1 | 2 | 3;
 }
