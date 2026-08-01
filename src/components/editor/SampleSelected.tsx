@@ -34,6 +34,21 @@ export default function SampleSelected({
     initialData?.contributors ?? [],
   );
   useEffect(() => {
+    if (initialData) {
+      // Server already fetched this via SSR — sync state from it (covers
+      // client-side navigation between exercises, where props change but
+      // this component instance stays mounted) and warm IndexedDB from it
+      // instead of re-fetching the same data over the network.
+      setData([initialData as ExerciseSummary]);
+      setTitle(initialData.title);
+      setTextInput(initialData.text);
+      setCategory(initialData.category ?? "");
+      setPracticeLinks(initialData.practiceLinks ?? []);
+      setContributors(initialData.contributors ?? []);
+      exercise.warmCache(initialData, prefix);
+      return;
+    }
+
     const getExercise = async () => {
       const data =
         prefix === "review"
@@ -55,7 +70,7 @@ export default function SampleSelected({
     };
 
     getExercise();
-  }, [exerciseSlug, prefix]);
+  }, [exerciseSlug, prefix, initialData]);
 
   const handleCopyButtonClick: React.MouseEventHandler<
     HTMLButtonElement

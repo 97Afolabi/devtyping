@@ -22,6 +22,18 @@ export default function SampleUnselected({
     initialData?.samples ?? [],
   );
   useEffect(() => {
+    if (initialData) {
+      // Server already fetched this via SSR — sync state from it (covers
+      // client-side navigation between topics, where props change but this
+      // component instance stays mounted) and warm IndexedDB from it
+      // instead of re-fetching the same data over the network.
+      handleTitleUpdate(initialData.title);
+      handleDescriptionUpdate(initialData.description);
+      handleSamplesUpdate(initialData.samples);
+      topic.warmCache(initialData, prefix);
+      return;
+    }
+
     const getSamples = async () => {
       const data =
         prefix === "review"
@@ -36,7 +48,7 @@ export default function SampleUnselected({
     };
 
     getSamples();
-  }, [prefix, slug]);
+  }, [prefix, slug, initialData]);
 
   const handleTitleUpdate = (title: string) => {
     setTitle(title);
