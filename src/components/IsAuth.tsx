@@ -1,13 +1,31 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAuthUser } from "../lib/data/auth";
+
+// getAuthUser() reads localStorage, which doesn't exist during SSR. Reading
+// it directly during render caused a hydration mismatch for any logged-in
+// user, since the server always renders as signed-out. `undefined` means
+// "not checked yet" (matches the server, and the first client render,
+// before the effect runs); the real value applies on the next render.
+function useAuth() {
+  const [auth, setAuth] = useState<ReturnType<typeof getAuthUser> | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    setAuth(getAuthUser());
+  }, []);
+
+  return auth;
+}
 
 function isAuth(Component: any) {
   return function IsAuth(props: any) {
     const router = useRouter();
-    const auth = getAuthUser();
-    const unauthorized = !auth || !auth.username;
+    const auth = useAuth();
+    const checked = auth !== undefined;
+    const unauthorized = checked && (!auth || !auth.username);
 
     useEffect(() => {
       if (unauthorized) {
@@ -15,7 +33,7 @@ function isAuth(Component: any) {
       }
     }, [router, unauthorized]);
 
-    if (unauthorized) {
+    if (!checked || unauthorized) {
       return null;
     }
 
@@ -26,8 +44,9 @@ function isAuth(Component: any) {
 function isAdmin(Component: any) {
   return function IsAuth(props: any) {
     const router = useRouter();
-    const auth = getAuthUser();
-    const unauthorized = !auth || !auth.isAdmin;
+    const auth = useAuth();
+    const checked = auth !== undefined;
+    const unauthorized = checked && (!auth || !auth.isAdmin);
 
     useEffect(() => {
       if (unauthorized) {
@@ -35,7 +54,7 @@ function isAdmin(Component: any) {
       }
     }, [router, unauthorized]);
 
-    if (unauthorized) {
+    if (!checked || unauthorized) {
       return null;
     }
 
