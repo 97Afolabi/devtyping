@@ -224,7 +224,7 @@ const Contribute = () => {
               name="title"
               value={title}
               onChange={handleTitleUpdate}
-              className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+              className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               placeholder="Enter title"
               required={true}
             />
@@ -242,7 +242,7 @@ const Contribute = () => {
               name="topic"
               value={topic}
               onChange={handleTopicUpdate}
-              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-sm leading-tight focus:outline-hidden focus:shadow-outline"
+              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-sm leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             >
               <option>Choose</option>
               {topicSummaries &&
@@ -269,7 +269,7 @@ const Contribute = () => {
               name="category"
               value={category}
               onChange={handleCategoryUpdate}
-              className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+              className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               placeholder="e.g. linked-lists, graphs"
             />
           </div>
@@ -286,7 +286,7 @@ const Contribute = () => {
               name="difficulty"
               value={difficulty}
               onChange={handleDifficultyUpdate}
-              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-sm leading-tight focus:outline-hidden focus:shadow-outline"
+              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-sm leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             >
               <option value="">Unset</option>
               {DIFFICULTIES.map((level) => (
@@ -314,7 +314,7 @@ const Contribute = () => {
                 id="sourceKind"
                 value={sourceKind}
                 onChange={handleSourceKindUpdate}
-                className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-sm leading-tight focus:outline-hidden focus:shadow-outline"
+                className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-sm leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               >
                 {SOURCE_KINDS.map((kind) => (
                   <option value={kind} key={kind}>
@@ -337,7 +337,7 @@ const Contribute = () => {
                 onChange={(e) => setSourceOrigin(e.target.value)}
                 disabled={sourceKind === "original"}
                 placeholder="e.g. TheAlgorithms/Go"
-                className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline disabled:bg-gray-100"
+                className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:bg-gray-100"
               />
             </div>
           </div>
@@ -356,7 +356,7 @@ const Contribute = () => {
                 value={sourceUrl}
                 onChange={(e) => setSourceUrl(e.target.value)}
                 placeholder="Link to the upstream file"
-                className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+                className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               />
             </div>
           )}
@@ -373,7 +373,7 @@ const Contribute = () => {
                 id="sourceLicense"
                 value={sourceLicense}
                 onChange={handleSourceLicenseUpdate}
-                className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-sm leading-tight focus:outline-hidden focus:shadow-outline"
+                className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-sm leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               >
                 {SOURCE_LICENSES.map((license) => (
                   <option value={license} key={license}>
@@ -396,7 +396,7 @@ const Contribute = () => {
                   value={sourceAttribution}
                   onChange={(e) => setSourceAttribution(e.target.value)}
                   placeholder="Notice to carry over"
-                  className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+                  className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 />
               </div>
             )}
@@ -415,7 +415,7 @@ const Contribute = () => {
             name="text"
             value={text}
             onChange={handleTextUpdate}
-            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             placeholder="Paste sample"
             rows={20}
             required={true}
@@ -447,7 +447,7 @@ const Contribute = () => {
                   updatePracticeLink(index, { label: e.target.value })
                 }
                 placeholder="Problem title, e.g. Linked List Cycle"
-                className="appearance-none border rounded-sm w-full md:w-2/5 py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+                className="appearance-none border rounded-sm w-full md:w-2/5 py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               />
               <input
                 type="url"
@@ -456,7 +456,7 @@ const Contribute = () => {
                   updatePracticeLink(index, { url: e.target.value })
                 }
                 placeholder="https://..."
-                className="appearance-none border rounded-sm w-full md:w-2/5 py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+                className="appearance-none border rounded-sm w-full md:w-2/5 py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               />
               <select
                 value={link.provider}
@@ -466,7 +466,7 @@ const Contribute = () => {
                       .value as ExercisePracticeLink["provider"],
                   })
                 }
-                className="border rounded-sm py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+                className="border rounded-sm py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               >
                 {PRACTICE_LINK_PROVIDERS.map((provider) => (
                   <option value={provider} key={provider}>
@@ -499,7 +499,7 @@ const Contribute = () => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-2 px-4 rounded-sm focus:outline-hidden focus:shadow-outline"
+            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-2 px-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
           >
             Submit
           </button>

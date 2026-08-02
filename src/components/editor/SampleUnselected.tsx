@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { topic } from "../../lib/data/data";
 import { ExerciseSummary } from "../../lib/interfaces/Exercise";
 import { SampleUnselectedProp } from "../../lib/interfaces/Editor";
@@ -14,6 +14,7 @@ export default function SampleUnselected({
   slug: string;
   initialData?: SampleUnselectedProp | null;
 }) {
+  const h1Ref = useRef<HTMLHeadingElement>(null);
   const [title, setTitle] = useState(initialData?.title ?? "");
   const [description, setDescription] = useState(
     initialData?.description ?? "",
@@ -50,6 +51,11 @@ export default function SampleUnselected({
     getSamples();
   }, [prefix, slug, initialData]);
 
+  // Move focus to the heading on route change (WCAG 2.4.3 focus order).
+  useEffect(() => {
+    h1Ref.current?.focus();
+  }, [slug]);
+
   const handleTitleUpdate = (title: string) => {
     setTitle(title);
   };
@@ -77,7 +83,13 @@ export default function SampleUnselected({
       >
         <section className="w-full h-full overflow-y-scroll font-mono font-semibold">
           <section className="h-8 bg-white py-1 px-4">
-            <div>{title}</div>
+            <h1
+              ref={h1Ref}
+              tabIndex={-1}
+              className="m-0 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            >
+              {title}
+            </h1>
           </section>
           <article className="text-center mx-5 my-5 whitespace-pre-line text-gray-700">
             <p className="text-sm mb-5">{description}</p>

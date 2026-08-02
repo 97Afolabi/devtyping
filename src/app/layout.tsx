@@ -45,8 +45,14 @@ export default function RootLayout({
         className="flex flex-col h-screen bg-black"
         style={{ maxWidth: "1920px", margin: "0 auto" }}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded-sm"
+        >
+          Skip to main content
+        </a>
         <Header />
-        <main className="flex-1 bg-stone-200">
+        <main id="main-content" className="flex-1 bg-stone-200">
           {children}
           {/* TODO: use <Suspense>{children}</Suspense> */}
         </main>
