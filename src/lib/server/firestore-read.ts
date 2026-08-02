@@ -1,6 +1,10 @@
 import { cache } from "react";
 import { Timestamp } from "firebase-admin/firestore";
-import { Exercise, ExerciseSummary } from "../interfaces/Exercise";
+import {
+  Exercise,
+  ExerciseSource,
+  ExerciseSummary,
+} from "../interfaces/Exercise";
 import { SampleUnselectedProp } from "../interfaces/Editor";
 import { adminDb } from "./firebase-admin";
 
@@ -106,7 +110,10 @@ export const getActiveExerciseData = cache(async function getActiveExerciseData(
     };
   } catch (error) {
     // Same fallback rationale as getTopicSampleData above.
-    console.error("getActiveExerciseData failed, falling back client-side", error);
+    console.error(
+      "getActiveExerciseData failed, falling back client-side",
+      error,
+    );
     return null;
   }
 });
@@ -141,7 +148,47 @@ export async function getSitemapData(): Promise<SitemapTopic[]> {
       }))
       .filter((topic) => topic.exerciseSlugs.length > 0);
   } catch (error) {
-    console.error("getSitemapData failed, sitemap will only list the homepage", error);
+    console.error(
+      "getSitemapData failed, sitemap will only list the homepage",
+      error,
+    );
+    return [];
+  }
+}
+
+export interface AttributionEntry {
+  slug: string;
+  title: string;
+  topicSlug: string;
+  source: ExerciseSource;
+}
+
+export async function getNonOriginalExercises(): Promise<AttributionEntry[]> {
+  try {
+    const snap = await adminDb
+      .collection("exercises")
+      .where("isActive", "==", true)
+      .get();
+
+    return snap.docs
+      .map((doc) => {
+        const data = doc.data();
+        return {
+          slug: data.slug ?? doc.id,
+          title: data.title,
+          topicSlug: data.topicSlug,
+          source: data.source as ExerciseSource | undefined,
+        };
+      })
+      .filter(
+        (entry): entry is AttributionEntry =>
+          !!entry.source && entry.source.kind !== "original",
+      );
+  } catch (error) {
+    console.error(
+      "getNonOriginalExercises failed, attribution page will show none",
+      error,
+    );
     return [];
   }
 }
