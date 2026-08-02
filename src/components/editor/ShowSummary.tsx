@@ -127,7 +127,7 @@ export default function ShowSummary({ data }: { data: ExerciseSummary }) {
         <p>
           <button
             type="button"
-            className="bg-slate-600 hover:bg-slate-900 disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-bold py-1 px-2 rounded-sm focus:outline-hidden focus:shadow-outline"
+            className="bg-slate-600 hover:bg-slate-900 disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-bold py-1 px-2 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             onClick={() => handleStatusUpdate(data, isActive)}
             disabled={isUpdatingStatus}
             aria-disabled={isUpdatingStatus}

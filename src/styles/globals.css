@@ -16,6 +16,14 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
+
+  /* Baseline visible focus indicator. Components with their own
+     focus-visible utility classes override this; this is the fallback for
+     everything else (nav links, etc.) that has no explicit focus style. */
+  :focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
 }
 
 .moving-text {
@@ -63,5 +71,14 @@
     from,
     to {
         border-color: transparent;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* .visible already sets opacity: 1 / display: block unconditionally,
+       so removing the animation here just stops the slide-in/fade motion
+       while still showing the current sentence normally. */
+    .text {
+        animation: none;
     }
 }

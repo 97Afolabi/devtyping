@@ -1,9 +1,16 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Exercise, ExerciseSummary } from "../../lib/interfaces/Exercise";
 import { exercise } from "../../lib/data/data";
 import Sidebar from "./Sidebar";
 import Timer from "./Timer";
+
+// Solid colours chosen to meet 3:1 contrast against the white sections they
+// sit on (WCAG 1.4.11 non-text contrast).
+const NEUTRAL_COLOUR = "#94a3b8"; // slate-400
+const ERROR_COLOUR = "#dc2626"; // red-600
+const SUCCESS_COLOUR = "#15803d"; // green-700
 
 export default function SampleSelected({
   prefix,
@@ -16,13 +23,20 @@ export default function SampleSelected({
   exerciseSlug: string;
   initialData?: Exercise | null;
 }) {
+  const router = useRouter();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const startTimeRef = useRef<number | null>(null);
+  const keystrokeCountRef = useRef(0);
+  const errorCountRef = useRef(0);
+
   const [isTimerRunning, setTimerRunning] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [data, setData] = useState<ExerciseSummary[]>(
     initialData ? [initialData as ExerciseSummary] : [],
   );
   const [buttonText, setCopyButtonText] = useState("Copy");
-  const [indicatorColour, setIndicatorColour] = useState("rgba(255, 255, 255)");
+  const [indicatorColour, setIndicatorColour] = useState(NEUTRAL_COLOUR);
+  const [resultsMessage, setResultsMessage] = useState("");
 
   const [textInput, setTextInput] = useState(initialData?.text ?? "");
   const [title, setTitle] = useState(initialData?.title ?? "");
@@ -72,6 +86,27 @@ export default function SampleSelected({
     getExercise();
   }, [exerciseSlug, prefix, initialData]);
 
+  useEffect(() => {
+    textareaRef.current?.focus();
+    setInputValue("");
+    setIndicatorColour(NEUTRAL_COLOUR);
+    setResultsMessage("");
+    setTimerRunning(false);
+    startTimeRef.current = null;
+    keystrokeCountRef.current = 0;
+    errorCountRef.current = 0;
+  }, [exerciseSlug]);
+
+  const backHref = prefix ? `/${prefix}/${topicSlug}` : `/${topicSlug}`;
+
+  // WCAG 2.1.2: this typing surface captures every keystroke, so it must
+  // offer a way to leave that doesn't rely on the mouse.
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Escape") {
+      router.push(backHref);
+    }
+  };
+
   const handleCopyButtonClick: React.MouseEventHandler<
     HTMLButtonElement
   > = () => {
@@ -87,22 +122,38 @@ export default function SampleSelected({
     if (!isTimerRunning && newInputValue.length) {
       // Start the timer when input begins
       setTimerRunning(true);
+      startTimeRef.current = Date.now();
     }
 
+    keystrokeCountRef.current += 1;
+    setResultsMessage("");
+
+    const isCorrectSoFar = newInputValue === textInput.slice(0, inputPos);
+
     // Test equality of input and text to be entered
-    if (newInputValue === textInput.slice(0, inputPos)) {
-      setIndicatorColour("rgba(255, 255, 255)");
+    if (isCorrectSoFar) {
+      setIndicatorColour(NEUTRAL_COLOUR);
     } else {
-      setIndicatorColour("rgba(245, 32, 32, 0.8)");
+      setIndicatorColour(ERROR_COLOUR);
+      errorCountRef.current += 1;
     }
 
     // Change the background color when input is complete
-    if (
-      textInput.length === newInputValue.length &&
-      newInputValue === textInput.slice(0, inputPos)
-    ) {
-      setIndicatorColour("rgba(32, 245, 32, 0.8)");
+    if (textInput.length === newInputValue.length && isCorrectSoFar) {
+      setIndicatorColour(SUCCESS_COLOUR);
       setTimerRunning(false);
+
+      const elapsedMinutes = startTimeRef.current
+        ? Math.max(Date.now() - startTimeRef.current, 1000) / 60000
+        : 1 / 60;
+      const wpm = Math.round(textInput.length / 5 / elapsedMinutes);
+      const totalKeystrokes = keystrokeCountRef.current;
+      const accuracy = Math.round(
+        ((totalKeystrokes - errorCountRef.current) / totalKeystrokes) * 100,
+      );
+      setResultsMessage(
+        `Completed. ${wpm} words per minute, ${accuracy}% accuracy.`,
+      );
     }
 
     return;
@@ -126,7 +177,12 @@ export default function SampleSelected({
     return (
       <>
         {beforeInput}
-        <strong style={{ borderBottom: "3px double red", fontSize: "18px" }}>
+        <strong
+          style={{
+            borderBottom: `3px double ${ERROR_COLOUR}`,
+            fontSize: "18px",
+          }}
+        >
           {currentInput}
         </strong>
         {afterInput}
@@ -167,6 +223,9 @@ export default function SampleSelected({
             </h1>
             <Timer isTyping={isTimerRunning}></Timer>
           </section>
+          <p className="bg-white text-xs text-gray-600 px-4 py-1">
+            Press Esc to exit this exercise.
+          </p>
           {practiceLinks.length > 0 && (
             <div className="flex flex-wrap gap-2 px-4 py-1 bg-white text-xs">
               {practiceLinks.map((link) => (
@@ -175,7 +234,7 @@ export default function SampleSelected({
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline text-slate-600 hover:text-slate-900"
+                  className="underline text-slate-600 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 >
                   {link.label}
                 </a>
@@ -200,20 +259,29 @@ export default function SampleSelected({
           }}
         >
           <textarea
-            className="basis-11/12 rounded-l-lg border-dashed border-2 px-2 py-2 text-start"
+            ref={textareaRef}
+            className="basis-11/12 rounded-l-lg border-dashed border-2 px-2 py-2 text-start focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             placeholder="Start typing..."
             value={inputValue}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
             onPaste={(e) => e.preventDefault()}
-            autoFocus={true}
+            aria-label="Type the code shown above"
           ></textarea>
           <button
-            className="basis-1/12 bg-slate-800 rounded-r-lg text-white"
+            className="basis-1/12 bg-slate-800 rounded-r-lg text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             onClick={handleCopyButtonClick}
           >
             {buttonText}
           </button>
         </section>
+        <p
+          role="status"
+          aria-live="polite"
+          className="text-center text-sm py-1"
+        >
+          {resultsMessage}
+        </p>
       </div>
     </>
   );

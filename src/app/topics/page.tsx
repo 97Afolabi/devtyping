@@ -83,7 +83,7 @@ const Topics = () => {
             name="topic"
             value={topic}
             onChange={handleTopicUpdate}
-            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             placeholder="Enter topic"
             required={true}
           />
@@ -100,7 +100,7 @@ const Topics = () => {
             name="summary"
             value={summary}
             onChange={handleSummaryUpdate}
-            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             placeholder="Enter summary"
             rows={5}
             required={true}
@@ -118,7 +118,7 @@ const Topics = () => {
             name="description"
             value={description}
             onChange={handleDescriptionUpdate}
-            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
+            className="appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             placeholder="Enter description"
             rows={10}
             required={true}
@@ -128,7 +128,7 @@ const Topics = () => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-2 px-4 rounded-sm focus:outline-hidden focus:shadow-outline"
+            className="bg-slate-600 hover:bg-slate-900 text-white font-bold py-2 px-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
           >
             Submit
           </button>

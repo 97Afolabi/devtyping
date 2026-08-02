@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ExerciseSummary } from "../../lib/interfaces/Exercise";
 import { getAuthUser } from "../../lib/data/auth";
@@ -28,7 +29,11 @@ export default function Sidebar({
     menuLink = prefix ? "/review" : "/";
     menuText = "Home";
   }
-  const auth = getAuthUser();
+
+  const [auth, setAuth] = useState<ReturnType<typeof getAuthUser>>(null);
+  useEffect(() => {
+    setAuth(getAuthUser());
+  }, []);
 
   return (
     <div
