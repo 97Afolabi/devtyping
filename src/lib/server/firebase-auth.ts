@@ -1,5 +1,5 @@
 import { User } from "../data/firebase/firestore/users";
-import { adminAuth, adminDb } from "./firebase-admin";
+import { adminDb, getAdminAuth } from "./firebase-admin";
 
 export interface AuthenticatedUser extends User {
   uid: string;
@@ -21,6 +21,7 @@ function getBearerToken(request: Request): string {
 
 async function getUidFromIdToken(idToken: string): Promise<string> {
   try {
+    const adminAuth = await getAdminAuth();
     const decodedToken = await adminAuth.verifyIdToken(idToken);
     return decodedToken.uid;
   } catch {
