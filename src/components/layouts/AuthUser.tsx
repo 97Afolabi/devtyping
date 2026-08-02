@@ -2,12 +2,6 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  onAuthStateChanged,
-  signInWithGithub,
-  signOut,
-} from "../../lib/data/firebase/auth/auth";
-import { firestoreUser } from "../../lib/data/firebase/firestore/users";
 
 function useUserSession(initialUser: any) {
   const [user, setUser] = useState(initialUser);
@@ -16,21 +10,33 @@ function useUserSession(initialUser: any) {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged((authUser) => {
-      setUser((previousUser: any) => {
-        if (
-          previousUser !== undefined &&
-          previousUser?.email !== authUser?.email
-        ) {
-          shouldRefresh.current = true;
-        }
+    let cancelled = false;
+    let unsubscribe: (() => void) | undefined;
 
-        return authUser;
-      });
-      setIsReady(true);
-    });
+    // Deferred dynamic import reduces total blocking time
+    import("../../lib/data/firebase/auth/auth").then(
+      ({ onAuthStateChanged }) => {
+        if (cancelled) return;
+        unsubscribe = onAuthStateChanged((authUser) => {
+          setUser((previousUser: any) => {
+            if (
+              previousUser !== undefined &&
+              previousUser?.email !== authUser?.email
+            ) {
+              shouldRefresh.current = true;
+            }
 
-    return () => unsubscribe();
+            return authUser;
+          });
+          setIsReady(true);
+        });
+      },
+    );
+
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
   }, []);
 
   useEffect(() => {
@@ -79,7 +85,8 @@ export default function AuthUser() {
     setUsername(fallbackUsername ?? "");
   }, [isReady, user]);
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    const { signOut } = await import("../../lib/data/firebase/auth/auth");
     signOut();
 
     localStorage.removeItem("dtUser");
@@ -88,6 +95,11 @@ export default function AuthUser() {
   };
 
   const handleSignIn = async () => {
+    const [{ signInWithGithub }, { firestoreUser }] = await Promise.all([
+      import("../../lib/data/firebase/auth/auth"),
+      import("../../lib/data/firebase/firestore/users"),
+    ]);
+
     const data = await signInWithGithub();
     if (data && data.slug) {
       const firestoreData = await firestoreUser.findById(data.slug);
