@@ -2,12 +2,14 @@ import {
   requireAdminUser,
   requireAuthenticatedUser,
 } from "../../src/lib/server/firebase-auth";
-import { adminAuth, adminDb } from "../../src/lib/server/firebase-admin";
+import { adminDb, getAdminAuth } from "../../src/lib/server/firebase-admin";
+
+const adminAuth = {
+  verifyIdToken: jest.fn(),
+};
 
 jest.mock("../../src/lib/server/firebase-admin", () => ({
-  adminAuth: {
-    verifyIdToken: jest.fn(),
-  },
+  getAdminAuth: jest.fn(),
   adminDb: {
     collection: jest.fn(),
   },
@@ -20,6 +22,7 @@ describe("server firebase auth", () => {
 
   beforeEach(() => {
     (adminDb.collection as jest.Mock).mockImplementation(mockCollection);
+    (getAdminAuth as jest.Mock).mockResolvedValue(adminAuth);
     jest.clearAllMocks();
   });
 

@@ -26,7 +26,7 @@ env:
 
 jobs:
   quality:
-    name: Quality (Node 22.x)
+    name: Quality (Node 24.x)
     runs-on: ubuntu-latest
 
     steps:
@@ -64,7 +64,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version: 24.x
           cache: yarn
 
       - name: Install dependencies
@@ -94,7 +94,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version: 24.x
           cache: yarn
 
       - name: Install dependencies

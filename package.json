@@ -5,6 +5,9 @@
   "repository": "https://github.com/97Afolabi/devtyping.git",
   "author": "Afolabi Samuel Adedeji <97afolabi@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
@@ -47,6 +50,7 @@
     "typescript": "6.0.3"
   },
   "resolutions": {
-    "postcss": "8.5.25"
+    "postcss": "8.5.25",
+    "jose": "4.15.9"
   }
 }
